@@ -18,23 +18,6 @@
 		<outdir name="../ndll/${BINDIR}"/>
 		<flag value="${LIB_DIR}"/>
 		<files id="files"/>
-		<!--
-		<lib name="-lwebkitgtk-3.0" if="linux"/>
-		<lib name="-lgtk-3" if="linux"/>
-		<lib name="-lsoup-2.4" if="linux"/>
-		<lib name="-ljavascriptcoregtk-3.0" if="linux"/>
-		<lib name="-lgdk-3" if="linux"/>
-		<lib name="-latk-1.0" if="linux"/>
-		<lib name="-lpangocairo-1.0" if="linux"/>
-		<lib name="-lgdk_pixbuf-2.0" if="linux"/>
-		<lib name="-lcairo-gobject" if="linux"/>
-		<lib name="-lpango-1.0" if="linux"/>
-		<lib name="-lcairo" if="linux"/>
-		<lib name="-lgio-2.0" if="linux"/>
-		<lib name="-lgobject-2.0" if="linux"/>
-		<lib name="-lglib-2.0" if="linux"/>
-		<lib name="-lgdk-3" if="linux"/>
-		-->
 	</target>
 
 	<target id="default">
