@@ -8,7 +8,6 @@
 
 #define EVENT_SIZE ( sizeof (struct inotify_event) )
 #define BUF_LEN ( 1024 * ( EVENT_SIZE + 16 ) )
-//#define val_throw_errno ( val_throw( alloc_string( strerror( errno ) ) ) )
 
 
 /**
@@ -29,6 +28,16 @@ static int getMaskIndex( int flag ) {
 	int i;
 	switch( flag ) {
 	case IN_ACCESS : i = 0; break;
+	case IN_ATTRIB : i = 1; break;
+	case IN_CLOSE_WRITE : i = 2; break;
+	case IN_CLOSE_NOWRITE : i = 3; break;
+	case IN_CREATE : i = 4; break;
+	case IN_DELETE : i = 5; break;
+	case IN_DELETE_SELF : i = 6; break;
+	case IN_MOVE_SELF : i = 7; break;
+	case IN_MOVED_FROM : i = 8; break;
+	case IN_MOVED_TO : i = 9; break;
+	case IN_OPEN : i = 10; break;
 	}
 	return i;
 }
@@ -63,7 +72,6 @@ static value hxinotify_read( value fd, value wd ) {
 	while( i < len ) {
 		struct inotify_event *e = ( struct inotify_event * ) &buffer[i];
 		if( e->len ) {
-			printf( "MMMMMMMMMMMMMMMM %d\n",e->mask );
 			value o = alloc_empty_object();
 			alloc_field( o, val_id( "wd" ), wd );
 			alloc_field( o, val_id( "mask" ), alloc_int( getMaskIndex( e->mask ) ) );
