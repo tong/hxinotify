@@ -1,6 +1,6 @@
 HXINOTIFY
 =========
-Haxe/Cpp/Neko bindings to inotify.
+Haxe/Cpp/Neko bindings to [inotify](http://en.wikipedia.org/wiki/Inotify).
 
 Inotify is an inode-based filesystem notification technology for monitoring various filesystem events.
 
@@ -14,7 +14,9 @@ Inotify can be used for such tasks:
 * reflecting changes to search databases
 * ...
 
-Inotify is useful in many situations where reactions on file system changes are necessary. Without inotify it can be implemented by periodical (or manually requested) examining files and directories. But such way is slow and wastes processor time.
+Inotify is useful in many situations where reactions on file system changes are necessary.
+Without inotify it can be implemented by periodical (or manually requested) examining files and directories.
+But such way is slow and wastes processor time.
 Inotify brings very fast and economical method how to react on file system changes.
 
 
