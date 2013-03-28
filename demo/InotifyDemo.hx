@@ -1,18 +1,20 @@
 
+#if cpp
 import cpp.vm.Thread;
+#elseif neko
+import neko.vm.Thread;
+#end
 import sys.FileSystem;
 import sys.Inotify;
 import sys.InotifyMask;
 import sys.io.File;
 
-class TestInotify {
+class InotifyDemo {
 
 	static function run_inotify() {
-		
 		var main = Thread.readMessage( true );
 		var path : String = Thread.readMessage( true );
 		var mask : Array<InotifyMask> = Thread.readMessage( true );
-		
 		var inotify = new Inotify();
 		var wd = inotify.addWatch( path, mask );
 		while( true ) {
@@ -44,16 +46,42 @@ class TestInotify {
 			path = Sys.getCwd();
 		else if( !FileSystem.exists( path ) )
 			throw 'path not found : $path';
+		
+		return;
+		
+		var inotify = new Inotify();
+		var wd = inotify.addWatch( path, [access,attrib,closeWrite,closeNoWrite,create,delete,deleteSelf,modify,moveSelf,movedFrom,movedTo,open] );
+		while( true ) {
+			var events = inotify.getEvents( wd );
+			if( events != null ) {
+				for( e in events ) {
+					Sys.println( e );
+				}
+			}
+		}
+		inotify.removeWatch( wd );
+		inotify.close();
 
-		var inotify = createInotify( path, [modify,create,delete,open] );
-
-		//Sys.sleep( 0.1 );
+		//var inotify = createInotify( path, [modify,create,delete,open] );
 		//File.saveContent( "temp", "delete me!" );
-
 		//Sys.sleep( 0.1 );
 		//FileSystem.deleteFile( "temp" );
-
-		inotify.sendMessage( "close" );
+		//inotify.sendMessage( "close" );
 		//Thread.readMessage(true);
+
+		/*
+		while( true ) {
+			var m = Thread.readMessage( false );
+			if( m == "close" ) {
+				inotify.removeWatch( wd );
+				inotify.close();
+				//main.sendMessage( true );
+			}
+			var events = inotify.getEvents( wd );
+			for( e in events ) {
+				Sys.println( e );
+			}
+		}
+		*/
 	}
 }
