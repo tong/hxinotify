@@ -1,5 +1,9 @@
 package sys;
 
+/**
+	Inode-based filesystem notification to monitor various filesystem events.
+*/
+@:require(sys)
 class Inotify {
 
 	public static inline var IN_NONBLOCK = 2048;
@@ -24,54 +28,70 @@ class Inotify {
 		fd = _init( ( nonBlock ? IN_NONBLOCK : 0 ) |  ( closeOnExec ? IN_CLOEXEC : 0 ) );
 	}
 
-	public inline function addWatch( path : String, mask : Array<InotifyMask> ) : Int {
-		return _add_watch( fd, path, createMaskFlag( mask ) );
+	public function addWatch( path : String, mask : Iterable<InotifyMask> ) : Int {
+		var v = 0;
+		for( m in mask )
+			v |= getMaskFlag( m );
+		#if neko
+		return _add_watch( fd, untyped path.__s, v );
+		#elseif cpp
+		return _add_watch( fd, path, v );
+		#end
 	}
 
-	public inline function removeWatch( wd : Int ) {
+	public function removeWatch( wd : Int ) {
 		_remove_watch( fd, wd );
 	}
 
 	public function getEvents( wd : Int ) : Array<InotifyEvent> {
-		// TODO well, this sucks
 		var events : Array<Dynamic> = _read( fd, wd );
-		var a = new Array<InotifyEvent>();
-		for( r in events ) {
-			var e : InotifyEvent = r;
-			e.mask = haxe.EnumTools.createByIndex( InotifyMask, r.mask );
-			a.push(e);
+		if( events != null ) {
+			#if neko
+			var len : Int = untyped __dollar__asize( events );
+			#elseif cpp
+			var len : Int = events.length;
+			#end
+			var i = 0;
+			var a = new Array<InotifyEvent>();
+			while( i < len ) {
+				var r : Dynamic = events[i];
+				a.push( { wd : r.wd, mask : getMask( r.mask ), cookie : r.cookie, len : r.len, name : r.name }  );
+				i++;
+			}
+			return a;
 		}
-		return a;
+		return null;
 	}
 
-	public inline function close() {
+	public function close() {
 		_close( fd );
 	}
 
-	public static function createMaskFlag( mask : Array<InotifyMask> ) : Int {
-		var v = 0;
-		for( f in mask ) {
-			v |= switch( f ) {
-			case access : IN_ACCESS;
-			case attrib : IN_ATTRIB;
-			case closeWrite : IN_CLOSE_WRITE;
-			case closeNoWrite : IN_CLOSE_NOWRITE;
-			case create : IN_CREATE;
-			case delete : IN_DELETE;
-			case deleteSelf : IN_DELETE_SELF;
-			case modify : IN_MODIFY;
-			case moveSelf : IN_MOVE_SELF;
-			case movedFrom : IN_MOVED_FROM;
-			case movedTo : IN_MOVED_TO;
-			case open : IN_OPEN;
-			}
+	/**
+		Returns the inotify flag value of given enum constructor
+	*/
+	public static function getMaskFlag( mask : InotifyMask ) : Int {
+		return switch( mask ) {
+		case access : IN_ACCESS;
+		case attrib : IN_ATTRIB;
+		case closeWrite : IN_CLOSE_WRITE;
+		case closeNoWrite : IN_CLOSE_NOWRITE;
+		case create : IN_CREATE;
+		case delete : IN_DELETE;
+		case deleteSelf : IN_DELETE_SELF;
+		case modify : IN_MODIFY;
+		case moveSelf : IN_MOVE_SELF;
+		case movedFrom : IN_MOVED_FROM;
+		case movedTo : IN_MOVED_TO;
+		case open : IN_OPEN;
 		}
-		return v;
 	}
 
-	/*
-	public static function getMask( mask : Int ) : InotifyMask {
-		return switch( mask ) {
+	/**
+		Get mask enum constructor from inotify flag
+	*/
+	public static function getMask( flag : Int ) : InotifyMask {
+		return switch( flag ) {
 		case IN_ACCESS : access;
 		case IN_ATTRIB : attrib;
 		case IN_CLOSE_WRITE : closeWrite;
@@ -87,15 +107,19 @@ class Inotify {
 		default: null;
 		}
 	}
-	*/
 
 	static var _init = ext( 'init', 1 );
-	static var _add_watch = ext( 'add_watch',3 );
+	static var _add_watch = ext( 'add_watch', 3 );
 	static var _remove_watch = ext( 'remove_watch', 2 );
 	static var _read = ext( 'read', 2 );
 	static var _close = ext( 'close', 1 );
 
 	static inline function ext( f : String, n : Int = 0 ) {
+		#if cpp
 		return cpp.Lib.load( 'inotify', 'hxinotify_'+f, n );
+		#elseif neko
+		return neko.Lib.load( 'inotify', 'hxinotify_'+f, n );
+		#end
 	}
+	
 }

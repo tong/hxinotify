@@ -1,5 +1,6 @@
 package sys;
 
+@:require(sys)
 enum InotifyMask {
 	access;
 	attrib;
