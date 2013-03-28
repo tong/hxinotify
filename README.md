@@ -1,4 +1,3 @@
-
 HXINOTIFY
 =========
 Haxe/Cpp/Neko bindings to inotify.
