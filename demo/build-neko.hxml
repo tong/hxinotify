@@ -1,0 +1,5 @@
+
+-neko inotify-demo.n
+-main InotifyDemo
+-cp ../
+-dce full
