@@ -11,6 +11,7 @@ import sys.io.File;
 
 class InotifyDemo {
 
+	/*
 	static function run_inotify() {
 		var main = Thread.readMessage( true );
 		var path : String = Thread.readMessage( true );
@@ -38,17 +39,32 @@ class InotifyDemo {
 		t.sendMessage( mask );
 		return t;
 	}
+	*/
 
 	static function main() {
 
 		var path = Sys.args()[0];
 		if( path == null  )
 			path = Sys.getCwd();
+			//path = Sys.getEnv( "HOME" ); // watch user home
 		else if( !FileSystem.exists( path ) )
 			throw 'path not found : $path';
 		
-		return;
+		Sys.println( 'inotify : '+path );
+
+		var inotify = new sys.Inotify();
+		var wd = inotify.addWatch( path, [create,delete,modify,open] );
+		while( true ) {
+			var events = inotify.getEvents( wd );
+			if( events != null ) {
+				for( e in events )
+					Sys.println( e );
+			}
+		}
+		inotify.removeWatch( wd );
+		inotify.close();
 		
+		/*
 		var inotify = new Inotify();
 		var wd = inotify.addWatch( path, [access,attrib,closeWrite,closeNoWrite,create,delete,deleteSelf,modify,moveSelf,movedFrom,movedTo,open] );
 		while( true ) {
@@ -61,6 +77,7 @@ class InotifyDemo {
 		}
 		inotify.removeWatch( wd );
 		inotify.close();
+		*/
 
 		//var inotify = createInotify( path, [modify,create,delete,open] );
 		//File.saveContent( "temp", "delete me!" );

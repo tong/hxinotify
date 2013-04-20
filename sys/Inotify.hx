@@ -51,14 +51,18 @@ class Inotify {
 			#elseif cpp
 			var len : Int = events.length;
 			#end
-			var i = 0;
-			var a = new Array<InotifyEvent>();
-			while( i < len ) {
-				var r : Dynamic = events[i];
-				a.push( { wd : r.wd, mask : getMask( r.mask ), cookie : r.cookie, len : r.len, name : r.name }  );
-				i++;
+			//trace("len: "+len );
+			if( len > 0 ) {
+				var a = new Array<InotifyEvent>();
+				var i = 0;
+				while( i < len ) {
+					trace("e");
+					var r = events[i];
+					a.push( { wd : r.wd, mask : getMask( r.mask ), cookie : r.cookie, len : r.len, name : r.name }  );
+					i++;
+				}
+				return a;
 			}
-			return a;
 		}
 		return null;
 	}
