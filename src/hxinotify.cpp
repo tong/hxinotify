@@ -67,8 +67,11 @@ static value hxinotify_read( value fd, value wd ) {
 	//val_array_size(v)
 	//val_array_set_size( events, n )
 #else
+//#endif
+//#ifdef HX_LINUX
 	val_array_set_size( events, n );
 #endif
+
 	return events;
 }
 
