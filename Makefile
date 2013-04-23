@@ -4,7 +4,6 @@
 #
 # For debug build set: debug=true
 #
-#
 
 OS =
 NDLL_FLAGS =
@@ -13,7 +12,7 @@ HXCPP_FLAGS =
 uname_M := $(shell sh -c 'uname -m 2>/dev/null || echo not')
 ifeq (${uname_M},x86_64)
 OS = Linux64
-NDLL_FLAGS += -DHXCPP_M64
+NDLL_FLAGS += -DHXCPP_M64 -Ddebug
 HXCPP_FLAGS += -D HXCPP_M64
 else ifeq (${uname_M},armv6l)
 OS = RPi
@@ -22,6 +21,8 @@ OS = Linux
 endif
 
 NDLL = ndll/$(OS)/inotify.ndll
+
+SRC_DEMO = $(NDLL) sys/io/Inotify*.hx demo/InotifyDemo.hx
 HX_DEMO = haxe  -main InotifyDemo -cp ../ $(HXCPP_FLAGS)
 
 ifeq (${debug},true)
@@ -30,22 +31,28 @@ else
 HX_DEMO += --no-traces -dce full
 endif
 
-all: ndll
-
-$(NDLL): src/*.cpp Makefile
+$(NDLL): src/*.cpp
 	@echo "Building ndll for : $(OS)"
-	(cd src;haxelib run hxcpp build.xml $(NDLL_FLAGS);)
+	@(cd src;haxelib run hxcpp build.xml $(NDLL_FLAGS);)
 
 ndll: $(NDLL)
 
-demo: $(NDLL) demo/InotifyDemo.hx
-	@echo 'Building inotify demo application ...'
+demo-neko: $(SRC_DEMO)
+	@mkdir -p demo
+	@(cd demo;$(HX_DEMO) -neko inotify-demo.n)
+	cp $(NDLL) demo/
+
+demo-cpp: $(SRC_DEMO)
 	@mkdir -p demo
 	@(cd demo;$(HX_DEMO) -neko inotify-demo.n)
 	@(cd demo;$(HX_DEMO) -cpp bin)
-	cp demo/bin/InotifyDemo demo/inotify-demo
+	cp demo/bin/InotifyDemo* demo/inotify-demo
 	cp $(NDLL) demo/
-	
+
+demo: demo-neko demo-cpp
+
+all: ndll demo
+
 clean:
 	rm -rf ndll/
 	rm -rf src/obj
