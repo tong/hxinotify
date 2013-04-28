@@ -22,7 +22,8 @@ endif
 
 NDLL = ndll/$(OS)/inotify.ndll
 
-SRC_DEMO = $(NDLL) sys/io/Inotify*.hx demo/InotifyDemo.hx
+SRC = sys/io/Inotify*.hx
+SRC_DEMO = $(SRC) sys/io/Inotify*.hx demo/InotifyDemo.hx
 HX_DEMO = haxe  -main InotifyDemo -cp ../ $(HXCPP_FLAGS)
 
 ifeq (${debug},true)
@@ -37,16 +38,16 @@ $(NDLL): src/*.cpp
 
 ndll: $(NDLL)
 
-demo-neko: $(SRC_DEMO)
+demo-neko: $(NDLL) $(SRC_DEMO)
 	@mkdir -p demo
 	@(cd demo;$(HX_DEMO) -neko inotify-demo.n)
 	cp $(NDLL) demo/
 
-demo-cpp: $(SRC_DEMO)
+demo-cpp: $(NDLL) $(SRC_DEMO)
 	@mkdir -p demo
 	@(cd demo;$(HX_DEMO) -neko inotify-demo.n)
 	@(cd demo;$(HX_DEMO) -cpp bin)
-	cp demo/bin/InotifyDemo* demo/inotify-demo
+	mv demo/bin/InotifyDemo* demo
 	cp $(NDLL) demo/
 
 demo: demo-neko demo-cpp

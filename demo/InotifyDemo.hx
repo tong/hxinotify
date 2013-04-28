@@ -1,12 +1,6 @@
 
-#if cpp
-import cpp.vm.Thread;
-#elseif neko
-import neko.vm.Thread;
-#end
 import sys.FileSystem;
 import sys.io.Inotify;
-import sys.io.File;
 
 class InotifyDemo {
 
@@ -15,8 +9,7 @@ class InotifyDemo {
 		var path = Sys.args()[0];
 		if( path == null  )
 			path = Sys.getCwd();
-			//path = Sys.getEnv( "HOME" ); // watch user home
-		else if( !FileSystem.exists( path ) )
+		if( !FileSystem.exists( path ) )
 			throw 'path not found : $path';
 		
 		Sys.println( 'inotify : '+path );
