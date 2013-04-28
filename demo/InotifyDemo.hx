@@ -6,7 +6,6 @@ import neko.vm.Thread;
 #end
 import sys.FileSystem;
 import sys.io.Inotify;
-import sys.io.InotifyMask;
 import sys.io.File;
 
 class InotifyDemo {
