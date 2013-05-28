@@ -5,9 +5,12 @@
 # For debug build set: debug=true
 #
 
-OS =
+OS = Linux
 NDLL_FLAGS =
 HXCPP_FLAGS =
+
+SRC = sys/io/Inotify*.hx
+SRC_DEMO = $(SRC) sys/io/Inotify*.hx demo/InotifyDemo.hx
 
 uname_M := $(shell sh -c 'uname -m 2>/dev/null || echo not')
 ifeq (${uname_M},x86_64)
@@ -16,14 +19,11 @@ NDLL_FLAGS += -DHXCPP_M64 -Ddebug
 HXCPP_FLAGS += -D HXCPP_M64
 else ifeq (${uname_M},armv6l)
 OS = RPi
-else
-OS = Linux
+else ifeq (${uname_M},armv7l)
+OS = ARM7
 endif
 
 NDLL = ndll/$(OS)/inotify.ndll
-
-SRC = sys/io/Inotify*.hx
-SRC_DEMO = $(SRC) sys/io/Inotify*.hx demo/InotifyDemo.hx
 HX_DEMO = haxe  -main InotifyDemo -cp ../ $(HXCPP_FLAGS)
 
 ifeq (${debug},true)
@@ -52,6 +52,15 @@ demo-cpp: $(NDLL) $(SRC_DEMO)
 
 demo: demo-neko demo-cpp
 
+haxelib:
+	zip -r hxinotify.zip ndll src/*.cpp src/build.xml sys haxelib.json
+
+install: haxelib
+	haxelib local hxinotify.zip
+
+uninstall:
+	haxelib remove hxinotify
+
 all: ndll demo
 
 clean:
@@ -60,5 +69,6 @@ clean:
 	rm -f src/all_objs
 	rm -rf demo/bin
 	rm -f demo/inotify-demo demo/inotify-demo.n demo/inotify.ndll
+	rm -f hxinotify.zip
 
 .PHONY: ndll demo clean
