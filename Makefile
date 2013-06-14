@@ -9,20 +9,19 @@ OS = Linux
 NDLL_FLAGS =
 HXCPP_FLAGS =
 
-SRC = sys/io/Inotify*.hx
-SRC_DEMO = $(SRC) sys/io/Inotify*.hx demo/InotifyDemo.hx
-
 uname_M := $(shell sh -c 'uname -m 2>/dev/null || echo not')
 ifeq (${uname_M},x86_64)
 OS = Linux64
 NDLL_FLAGS += -DHXCPP_M64 -Ddebug
 HXCPP_FLAGS += -D HXCPP_M64
 else ifeq (${uname_M},armv6l)
-OS = RPi
+OS = LinuxARM6
 else ifeq (${uname_M},armv7l)
-OS = ARM7
+OS = LinuxARM7
 endif
 
+SRC = sys/io/Inotify*.hx
+SRC_DEMO = $(SRC) example/*.hx example/*.hxml
 NDLL = ndll/$(OS)/inotify.ndll
 HX_DEMO = haxe  -main InotifyDemo -cp ../ $(HXCPP_FLAGS)
 
@@ -32,28 +31,25 @@ else
 HX_DEMO += --no-traces -dce full
 endif
 
+all: ndll
+
 $(NDLL): src/*.cpp
-	@echo "Building ndll for : $(OS)"
 	@(cd src;haxelib run hxcpp build.xml $(NDLL_FLAGS);)
 
 ndll: $(NDLL)
 
-demo-neko: $(NDLL) $(SRC_DEMO)
-	@mkdir -p demo
-	@(cd demo;$(HX_DEMO) -neko inotify-demo.n)
-	cp $(NDLL) demo/
+example-cpp: $(NDLL) $(SRC_DEMO)
+	cd example && haxe build-cpp.hxml $(HXCPP_FLAGS)
 
-demo-cpp: $(NDLL) $(SRC_DEMO)
-	@mkdir -p demo
-	@(cd demo;$(HX_DEMO) -neko inotify-demo.n)
-	@(cd demo;$(HX_DEMO) -cpp bin)
-	mv demo/bin/InotifyDemo* demo
-	cp $(NDLL) demo/
+example-neko: $(NDLL) $(SRC_DEMO)
+	cd example && haxe build-neko.hxml
 
-demo: demo-neko demo-cpp
+example: example-neko example-cpp
 
-haxelib:
-	zip -r hxinotify.zip ndll src/*.cpp src/build.xml sys haxelib.json
+hxinotify.zip: clean ndll
+	zip -r hxinotify.zip example/ ndll/ src/hxinotify.cpp src/build.xml sys haxelib.json README.md
+
+haxelib: hxinotify.zip
 
 install: haxelib
 	haxelib local hxinotify.zip
@@ -61,14 +57,12 @@ install: haxelib
 uninstall:
 	haxelib remove hxinotify
 
-all: ndll demo
-
 clean:
-	rm -rf ndll/
+	rm -rf example/cpp
+	rm -f example/test*
+	rm -rf ndll/$(OS)
 	rm -rf src/obj
 	rm -f src/all_objs
-	rm -rf demo/bin
-	rm -f demo/inotify-demo demo/inotify-demo.n demo/inotify.ndll
 	rm -f hxinotify.zip
 
-.PHONY: ndll demo clean
+.PHONY: ndll example-cpp example-neko example haxelib install uninstall clean
