@@ -1,0 +1,4 @@
+
+-cp ../
+-main InotifyExample
+-neko test.n

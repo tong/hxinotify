@@ -1,0 +1,5 @@
+
+-cp ../
+-main InotifyExample
+-cpp cpp
+-cmd cp cpp/InotifyExample test
