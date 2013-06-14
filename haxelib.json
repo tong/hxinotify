@@ -1,11 +1,11 @@
 {
   "name": "hxinotify",
+  "description": "Cpp/Neko bindings linux-inotify bindings",
   "license": "public",
-  "tags": ["linux","filesystem","neko","cpp","inotify"],
-  "description": "Cpp/Neko bindings to inotify",
-  "contributors": ["tong"],
-  "releasenote": "Initial release",
-  "version": "1.0",
   "url": "https://github.com/tong/hxinotify",
+  "tags": ["inotify","linux","filesystem","io","neko","cpp","sys"],
+  "contributors": ["tong"],
+  "version": "1.0",
+  "releasenote": "Initial release",
   "dependencies": {}
 }
