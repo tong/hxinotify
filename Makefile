@@ -12,12 +12,14 @@ HXCPP_FLAGS =
 uname_M := $(shell sh -c 'uname -m 2>/dev/null || echo not')
 ifeq (${uname_M},x86_64)
 OS = Linux64
-NDLL_FLAGS += -DHXCPP_M64 -Ddebug
+NDLL_FLAGS += -DHXCPP_M64
 HXCPP_FLAGS += -D HXCPP_M64
 else ifeq (${uname_M},armv6l)
 OS = LinuxARM6
 else ifeq (${uname_M},armv7l)
-OS = LinuxARM7
+HXCPP_FLAGS += -D HXCPP_ARM6
+OS = LinuxARM6
+HXCPP_FLAGS += -D HXCPP_ARM6
 endif
 
 SRC = sys/io/Inotify*.hx
