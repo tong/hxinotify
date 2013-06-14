@@ -1,0 +1,6 @@
+*sublime-*
+TODO
+*.o
+src/all_objs
+src/obj
+*.zip
