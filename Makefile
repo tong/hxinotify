@@ -46,16 +46,16 @@ example-neko: $(NDLL) $(SRC_DEMO)
 
 example: example-neko example-cpp
 
-hxinotify.zip: clean ndll
-	zip -r hxinotify.zip example/ ndll/ src/hxinotify.cpp src/build.xml sys haxelib.json README.md
+inotify.zip: clean ndll
+	zip -r inotify.zip example/ ndll/ src/hxinotify.cpp src/build.xml sys haxelib.json README.md
 
-haxelib: hxinotify.zip
+haxelib: inotify.zip
 
 install: haxelib
-	haxelib local hxinotify.zip
+	haxelib local inotify.zip
 
 uninstall:
-	haxelib remove hxinotify
+	haxelib remove inotify
 
 clean:
 	rm -rf example/cpp
@@ -63,6 +63,6 @@ clean:
 	rm -rf ndll/$(OS)
 	rm -rf src/obj
 	rm -f src/all_objs
-	rm -f hxinotify.zip
+	rm -f inotify.zip
 
 .PHONY: ndll example-cpp example-neko example haxelib install uninstall clean
