@@ -5,7 +5,7 @@ using Lambda;
 /**
 	Inode-based filesystem notification to monitor various filesystem events.
 */
-@:require(sys)
+@:require(cpp||neko)
 class Inotify {
 
 	public static inline var NONBLOCK = 04000;
