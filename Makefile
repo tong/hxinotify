@@ -2,8 +2,6 @@
 #
 # hxinotify
 #
-# For debug build set: debug=true
-#
 
 OS = Linux
 NDLL_FLAGS =
