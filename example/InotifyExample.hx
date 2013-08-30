@@ -9,7 +9,7 @@ class InotifyExample {
 
 	static function main() {
 
-		if( Sys.systemName() ) {
+		if( Sys.systemName() != 'Linux' ) {
 			Sys.println( 'Inotify is only available on linux' );			
 			Sys.exit(1);
 		}
