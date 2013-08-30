@@ -9,6 +9,11 @@ class InotifyExample {
 
 	static function main() {
 
+		if( Sys.systemName() ) {
+			Sys.println( 'Inotify is only available on linux' );			
+			Sys.exit(1);
+		}
+
 		var path = Sys.args()[0];
 		if( path == null  )
 			path = Sys.getCwd();
