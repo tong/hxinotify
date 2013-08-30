@@ -3,7 +3,7 @@ package sys.io;
 using Lambda;
 
 /**
-	Inode-based filesystem notification to monitor various filesystem events.
+	Inode-based filesystem notification.
 */
 @:require(cpp||neko)
 class Inotify {
@@ -46,10 +46,14 @@ class Inotify {
 
 	var fd : Int;
 
+	/**
+	*/
 	public function new( nonBlock : Bool = false, closeOnExec : Bool = false ) {
 		fd = _init( ( nonBlock ? NONBLOCK : 0 ) | ( closeOnExec ? CLOEXEC : 0 ) );
 	}
 	
+	/**
+	*/
 	public function addWatch( path : String, mask : Int ) : Int {
 		#if neko
 		return _add_watch( fd, untyped path.__s, mask );
@@ -58,10 +62,14 @@ class Inotify {
 		#end
 	}
 
+	/**
+	*/
 	public function removeWatch( wd : Int ) {
 		_remove_watch( fd, wd );
 	}
 
+	/**
+	*/
 	public function getEvents( wd : Int ) : Array<InotifyEvent> {
 		#if cpp
 		var events : Array<InotifyEvent> = _read( fd, wd );
@@ -72,15 +80,17 @@ class Inotify {
 		#end
 	}
 
+	/**
+	*/
 	public function close() _close( fd );
 
-	static var _init = ext( 'init', 1 );
-	static var _add_watch = ext( 'add_watch', 3 );
-	static var _remove_watch = ext( 'remove_watch', 2 );
-	static var _read = ext( 'read', 2 );
-	static var _close = ext( 'close', 1 );
+	static var _init = load( 'init', 1 );
+	static var _add_watch = load( 'add_watch', 3 );
+	static var _remove_watch = load( 'remove_watch', 2 );
+	static var _read = load( 'read', 2 );
+	static var _close = load( 'close', 1 );
 
-	static inline function ext( f : String, n : Int = 0 ) {
+	static inline function load( f : String, n : Int = 0 ) {
 		#if cpp
 		return cpp.Lib.load( 'inotify', 'hxinotify_'+f, n );
 		#elseif neko

@@ -1,4 +1,3 @@
-
--cp ../
+-lib inotify
 -main InotifyExample
 -neko test.n

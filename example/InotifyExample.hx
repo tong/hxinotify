@@ -2,6 +2,9 @@
 import sys.FileSystem;
 import sys.io.Inotify;
 
+/**
+	A simple example of using hxinotify to monitor given path (or cwd).
+*/
 class InotifyExample {
 
 	static function main() {
@@ -22,19 +25,19 @@ class InotifyExample {
 				trace(e);
 				if( e.mask & Inotify.CREATE > 0 ) {
 					if( e.mask & Inotify.ISDIR > 0 )
-						Sys.println( 'The directory ${e.name} was created' );
+						Sys.println( 'The directory "${e.name}" was created' );
 					else
-						Sys.println( 'The file ${e.name} was created' );
+						Sys.println( 'The file "${e.name}" was created' );
 				} else if( e.mask & Inotify.DELETE > 0 ) {
 					if( e.mask & Inotify.ISDIR > 0 )
-						Sys.println( 'The directory ${e.name} was deleted' );
+						Sys.println( 'The directory "${e.name}" was deleted' );
 					else
-						Sys.println( 'The file ${e.name} was deleted.' );
+						Sys.println( 'The file "${e.name}" was deleted.' );
 				} else if( e.mask & Inotify.MODIFY > 0 ) {
-					if( e.mask & Inotify.MODIFY > 0 )
-						Sys.println( 'The directory ${e.name} was modified' );
+					if( e.mask & Inotify.ISDIR > 0 )
+						Sys.println( 'The directory "${e.name}" was modified' );
 					else
-						Sys.println( 'The file ${e.name} was modified' );
+						Sys.println( 'The file "${e.name}" was modified' );
 				}
 			}
 		}

@@ -15,4 +15,4 @@ Inotify can be used for:
 Inotify is useful in many situations where reactions on file system changes are necessary.  
 Without inotify it can be implemented by periodical (or manually requested) examining files and directories, but such way is slow and wastes processor time. Inotify brings very fast and economical method how to react on file system changes.  
 
-HXInotify has no requirements except a supporting linux kernel (>=2.6.13).
+Hxinotify has no requirements except a supporting linux kernel (>=2.6.13).
