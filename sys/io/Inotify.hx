@@ -1,5 +1,11 @@
 package sys.io;
 
+#if cpp
+import cpp.Lib;
+#elseif neko
+import neko.Lib;
+#end
+
 using Lambda;
 
 /**
@@ -75,6 +81,8 @@ class Inotify {
 		var events : Array<InotifyEvent> = _read( fd, wd );
 		return events;
 		#elseif neko
+		//var events : Dynamic = _read( fd, wd );
+		//return (events==null) ? null : neko.Lib.nekoToHaxe(events);
 		var events : Array<InotifyEvent> = neko.Lib.nekoToHaxe( _read( fd, wd ) );
 		return events;
 		#end
@@ -84,18 +92,36 @@ class Inotify {
 	*/
 	public function close() _close( fd );
 
-	static var _init = load( 'init', 1 );
-	static var _add_watch = load( 'add_watch', 3 );
-	static var _remove_watch = load( 'remove_watch', 2 );
-	static var _read = load( 'read', 2 );
-	static var _close = load( 'close', 1 );
 
-	static inline function load( f : String, n : Int = 0 ) {
+
+	private static var moduleName = 'inotify';
+	#if neko
+	private static var moduleInit = false;
+	private static function loadNekoAPI() {
+		var init = neko.Lib.load( moduleName, 'neko_init', 5 );
+		if( init != null ) {
+			init(function(s) return new String(s), function(len:Int) { var r = []; if (len > 0) r[len - 1] = null; return r; }, null, true, false);
+			moduleInit = true;
+		} else
+			throw 'Could not find nekoapi interface';
+	}
+	#end
+
+	static var _init = lib( 'init', 1 );
+	static var _add_watch = lib( 'add_watch', 3 );
+	static var _remove_watch = lib( 'remove_watch', 2 );
+	static var _read = lib( 'read', 2 );
+	static var _close = lib( 'close', 1 );
+
+	private static inline function lib( f : String, n : Int = 0 ) : Dynamic {
+		return Lib.load( moduleName, 'hxinotify_'+f, n );
+		/*
 		#if cpp
-		return cpp.Lib.load( 'inotify', 'hxinotify_'+f, n );
 		#elseif neko
-		return neko.Lib.load( 'inotify', 'hxinotify_'+f, n );
+		//if( !moduleInit ) loadNekoAPI();
+		return neko.Lib.load( moduleName, 'hxinotify_'+f, n );
 		#end
+		*/
 	}
 	
 }
