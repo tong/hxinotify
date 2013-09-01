@@ -1,10 +1,5 @@
 
-#define IMPLEMENT_API
-#define NEKO_COMPATIBLE
-
-#include <hx/CFFI.h>
-#include <unistd.h>
-#include <sys/inotify.h>
+#include "hxinotify.h"
 
 #define EVENT_SIZE ( sizeof (struct inotify_event) )
 #define BUF_LEN ( 1024 * ( EVENT_SIZE + 16 ) ) // 1024 events
@@ -19,7 +14,6 @@ static void throwErrno() {
 	else
 		val_throw( alloc_string( strerror( errno ) ) );
 }
-
 
 static value hxinotify_init( value flags ) {
 	int fd = inotify_init1( val_int( flags ) );
@@ -47,30 +41,27 @@ static value hxinotify_read( value fd, value wd ) {
 	int len, i = 0;
 	len = read ( val_int( fd ), buf, BUF_LEN );
 	if( len < 0 ) {
-		/*
 		if( errno == EINTR )
 			printf("need to reissue system call \n" );
 		else if( !len )
 			printf("buf len too small ? \n" );
-		*/
 		throwErrno();
 	}
 	int asize = len / ( EVENT_SIZE * 2 );
 	value events = alloc_array( asize );
 	int p = 0;
 	while( i < len ) {
-		struct inotify_event *event;
-        event = (struct inotify_event *) &buf[i];
+		struct inotify_event *e = (struct inotify_event *) &buf[i];
 		value o = alloc_empty_object();
 		alloc_field( o, val_id( "wd" ), wd );
-		alloc_field( o, val_id( "mask" ), alloc_int( event->mask ) );
-		alloc_field( o, val_id( "cookie" ), alloc_int( event->cookie ) );
-		alloc_field( o, val_id( "len" ), alloc_int( event->len ) );
-		if( event->len )
-			alloc_field( o, val_id( "name" ), alloc_string( event->name ) );
+		alloc_field( o, val_id( "mask" ), alloc_int( e->mask ) );
+		alloc_field( o, val_id( "cookie" ), alloc_int( e->cookie ) );
+		alloc_field( o, val_id( "len" ), alloc_int( e->len ) );
+		if( e->len )
+			alloc_field( o, val_id( "name" ), alloc_string( e->name ) );
 		val_array_set_i( events, p, o );
 		p++;
-		i += EVENT_SIZE + event->len;
+		i += EVENT_SIZE + e->len;
 	}
 	return events;
 }
@@ -79,9 +70,3 @@ static value hxinotify_close( value fd ) {
 	( void ) close( val_int( fd ) );
 	return alloc_null();
 }
-
-DEFINE_PRIM( hxinotify_init, 1 );
-DEFINE_PRIM( hxinotify_add_watch, 3 );
-DEFINE_PRIM( hxinotify_remove_watch, 2 );
-DEFINE_PRIM( hxinotify_read, 2 );
-DEFINE_PRIM( hxinotify_close, 1 );
