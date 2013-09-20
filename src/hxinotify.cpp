@@ -30,7 +30,7 @@ static value hxinotify_add_watch( value _fd, value _path, value _mask ) {
 	return alloc_int( wd );
 }
 
-static value hxinotify_remove_watch( value fd, value wd ) {
+static value hxinotify_rm_watch( value fd, value wd ) {
 	if( inotify_rm_watch( val_int( fd ), val_int( wd ) ) == -1 )
 		throwErrno();
 	return alloc_null();
