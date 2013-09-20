@@ -9,6 +9,9 @@
 #include <unistd.h>
 #include <sys/inotify.h>
 
+#define EVENT_SIZE ( sizeof (struct inotify_event) )
+#define BUF_LEN ( 1024 * ( EVENT_SIZE + 16 ) ) // 1024 events
+
 static value hxinotify_init( value flags );
 static value hxinotify_add_watch( value fd, value path, value mask );
 static value hxinotify_rm_watch( value fd, value wd ) ;
