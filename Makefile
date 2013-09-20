@@ -21,14 +21,20 @@ OS=RPi
 HXCPP_FLAGS+=-D RPi
 endif
 
+ifeq (${os},android)
+OS=Android
+NDLL_FLAGS=-Dandroid
+HXCPP_FLAGS=-D android
+endif
+
 SRC=sys/io/Inotify*.hx
 SRC_EXAMPLE=$(SRC) example/*.hx example/*.hxml
 NDLL=ndll/$(OS)/inotify.ndll
 
 ifeq (${debug},true)
-HX_DEMO += -debug
+HX_DEMO+=-debug
 else
-HX_DEMO += --no-traces -dce full
+HX_DEMO+=--no-traces -dce full
 endif
 
 all: ndll
@@ -57,6 +63,9 @@ install: haxelib
 uninstall:
 	haxelib remove inotify
 
+haxedoc.xml:
+	haxe --no-output -neko api.n -xml $@ sys.io.Inotify sys.io.InotifyEvent
+
 clean:
 	rm -rf example/cpp
 	rm -f example/test*
@@ -64,5 +73,6 @@ clean:
 	rm -rf src/obj
 	rm -f src/all_objs
 	rm -f inotify.zip
+	rm -f haxedox.xml
 
 .PHONY: ndll example-cpp example-neko examples haxelib install uninstall clean
