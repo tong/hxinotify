@@ -1,5 +1,4 @@
--cp ../
-#-lib
+-lib inotify
 -main InotifyExample
 -cpp cpp
--cmd cp cpp/InotifyExample test
+-cmd cp cpp/InotifyExample inotify-example

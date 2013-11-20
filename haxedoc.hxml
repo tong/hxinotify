@@ -1,0 +1,4 @@
+--no-output
+-neko api.n
+-xml haxedoc.xml
+sys.io.Inotify

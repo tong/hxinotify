@@ -1,10 +1,6 @@
 package sys.io;
 
-#if cpp
-import cpp.Lib;
-#elseif neko
-import neko.Lib;
-#end
+import #if cpp cpp #else neko #end.Lib;
 
 using Lambda;
 
