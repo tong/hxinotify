@@ -17,10 +17,10 @@ class InotifyExample {
 		var path = Sys.args()[0];
 		if( path == null  )
 			path = Sys.getCwd();
+		path = FileSystem.fullPath( path );
 		if( !FileSystem.exists( path ) ) {
 			Sys.println( 'Path not found : $path' );
 			Sys.exit(1);
-			
 		}
 
 		Sys.println( 'Watching : $path' );
