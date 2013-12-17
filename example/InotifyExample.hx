@@ -1,4 +1,5 @@
 
+import Sys.println;
 import sys.FileSystem;
 import sys.io.Inotify;
 
@@ -10,7 +11,7 @@ class InotifyExample {
 	static function main() {
 
 		if( Sys.systemName() != 'Linux' ) {
-			Sys.println( 'Inotify is only available on linux' );			
+			println( 'Inotify is only available on linux' );			
 			Sys.exit(1);
 		}
 
@@ -19,11 +20,11 @@ class InotifyExample {
 			path = Sys.getCwd();
 		path = FileSystem.fullPath( path );
 		if( !FileSystem.exists( path ) ) {
-			Sys.println( 'Path not found : $path' );
+			println( 'Path not found : $path' );
 			Sys.exit(1);
 		}
 
-		Sys.println( 'Watching : $path' );
+		println( 'Watching : $path' );
 
 		var inotify = new Inotify();
 		var wd = inotify.addWatch( path, Inotify.ALL_EVENTS );
@@ -55,7 +56,7 @@ class InotifyExample {
 					var type = ( e.mask & Inotify.ISDIR > 0 ) ? 'directory' : 'file';
 					var name = (e.name!=null) ? ' "${e.name}"' : '';					
 					var now = DateTools.format( Date.now(), '%H:%M:%S' );
-					Sys.println( now+' : $type$name was $action' );
+					println( now+' $type$name was $action' );
 				}
 			}
 		}
