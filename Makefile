@@ -68,7 +68,7 @@ uninstall:
 
 clean:
 	rm -rf example/cpp
-	rm -f example/test*
+	rm -f example/inotify-example*
 	rm -rf ndll/$(OS)
 	rm -rf src/obj
 	rm -f src/all_objs

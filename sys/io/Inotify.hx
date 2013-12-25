@@ -74,6 +74,7 @@ class Inotify {
 		Adds a new watch, or modifies an existing watch, for the file whose location is specified in path.
 	*/
 	public function addWatch( path : String, mask : Int ) : Int {
+		path = FileSystem.fullPath( path );
 		#if neko
 		return _add_watch( fd, untyped path.__s, mask );
 		#elseif cpp
@@ -91,13 +92,16 @@ class Inotify {
 	/**
 	*/
 	public function getEvents( wd : Int ) : Array<InotifyEvent> {
-		
 		#if cpp
 		var events : Array<InotifyEvent> = _read( fd, wd );
 		return events;
-		
 		#elseif neko
-		var events : Array<InotifyEvent> = neko.Lib.nekoToHaxe( _read( fd, wd ) );
+		var r : Dynamic = _read( fd, wd );
+		if( r == null )
+			return null;
+		var events : Array<InotifyEvent> = Lib.nekoToHaxe( r );
+		//trace(events);
+		//var events : Array<InotifyEvent> = Lib.nekoToHaxe( r );
 		return events;
 		#end
 	}
@@ -106,21 +110,6 @@ class Inotify {
 	*/
 	public function close() _close( fd );
 
-	static var moduleName = 'inotify';
-	
-	#if neko
-	static var moduleInit = false;
-	static function loadNekoAPI() {
-		var init = neko.Lib.load( moduleName, 'neko_init', 5 );
-		if( init != null ) {
-			init( function(s) return new String(s),
-				  function(len:Int) { var r=[]; if(len > 0) r[len-1] = null; return r; }, null, true, false );
-			moduleInit = true;
-		} else
-			throw 'Could not find nekoapi interface';
-	}
-	#end
-
 	static var _init = lib( 'init', 1 );
 	static var _add_watch = lib( 'add_watch', 3 );
 	static var _rm_watch = lib( 'rm_watch', 2 );
@@ -128,7 +117,25 @@ class Inotify {
 	static var _close = lib( 'close', 1 );
 
 	static inline function lib( f : String, n : Int = 0 ) : Dynamic {
+		//#if neko if( !moduleInit ) loadNekoAPI(); #end
 		return Lib.load( moduleName, 'hxinotify_'+f, n );
 	}
+
+	static inline var moduleName = 'inotify';
+
+	#if neko
+
+	static var moduleInit = false;
+
+	static function loadNekoAPI() {
+		var init = Lib.load( moduleName, 'neko_init', 5 );
+		if( init != null ) {
+			init( function(s) return new String(s), function(len:Int) { var r=[]; if(len > 0) r[len-1] = null; return r; }, null, true, false );
+			moduleInit = true;
+		} else
+			throw 'Could not find nekoapi interface';
+	}
+
+	#end
 	
 }
