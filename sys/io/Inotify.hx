@@ -4,6 +4,40 @@ import #if cpp cpp #else neko #end.Lib;
 
 using Lambda;
 
+/*
+@:enum abstract InotifyEventType(Int) {
+	
+	var ACCESS = 0x00000001;
+	var MODIFY = 0x00000002;
+	var ATTRIB = 0x00000004;
+	var CLOSE_WRITE = 0x00000008;
+	var CLOSE_NOWRITE = 0x00000010;
+	var OPEN = 0x00000020;
+	var MOVED_FROM = 0x00000040;
+	var MOVED_TO = 0x00000080;
+	var CREATE = 0x00000100;
+	var DELETE = 0x00000200;
+	var DELETE_SELF = 0x00000400;
+	var MOVE_SELF = 0x00000800;
+
+	var CLOSE = 24; // CLOSE_WRITE | CLOSE_NOWRITE;
+	var MOVE = 192; // MOVED_FROM | MOVED_TO;
+
+	var UNMOUNT = 0x00002000;
+	var Q_OVERFLOW = 0x00004000;
+	var IGNORED = 0x00008000;
+	
+	var ONLYDIR = 0x01000000;
+	var DONT_FOLLOW = 0x02000000;
+	var EXCL_UNLINK = 0x04000000;
+	var MASK_ADD = 0x20000000;
+	var ISDIR = 0x40000000;
+	var ONESHOT = 0x80000000;
+	
+	var ALL = 4095;
+}
+*/
+
 typedef InotifyEvent = {
 
 	/** Watch descriptor */
@@ -18,14 +52,14 @@ typedef InotifyEvent = {
 	/** Size of "name" field */
 	var len : Int;
 
-	/** Optional null-terminated name */
+	/** Optional null-terminated name (contains file name not path) */
 	var name : String;
 }
 
 /**
 	Inode-based filesystem notification.
 */
-@:require(cpp||neko)
+@:require(sys&&(cpp||neko))
 class Inotify {
 
 	public static inline var NONBLOCK = 04000;
@@ -58,16 +92,16 @@ class Inotify {
 	public static inline var ISDIR = 0x40000000;
 	public static inline var ONESHOT = 0x80000000;
 	
-	public static inline var ALL_EVENTS =
-		ACCESS | MODIFY | ATTRIB | CLOSE_WRITE
-		| CLOSE_NOWRITE | OPEN | MOVED_FROM
-		| MOVED_TO | CREATE | DELETE
+	public static inline var ALL_EVENTS = ACCESS | MODIFY | ATTRIB | CLOSE_WRITE
+		| CLOSE_NOWRITE | OPEN | MOVED_FROM | MOVED_TO | CREATE | DELETE
 		| DELETE_SELF | MOVE_SELF;
 
 	var fd : Int;
 
+	/**
+	*/
 	public function new( nonBlock : Bool = false, closeOnExec : Bool = false ) {
-		fd = _init( ( nonBlock ? NONBLOCK : 0 ) | ( closeOnExec ? CLOEXEC : 0 ) );
+		fd = _init( (nonBlock ? NONBLOCK : 0) | (closeOnExec ? CLOEXEC : 0) );
 	}
 	
 	/**
@@ -90,19 +124,15 @@ class Inotify {
 	}
 
 	/**
+		Read availble results
 	*/
 	public function getEvents( wd : Int ) : Array<InotifyEvent> {
 		#if cpp
-		var events : Array<InotifyEvent> = _read( fd, wd );
-		return events;
+		var r : Array<InotifyEvent> =  _read( fd, wd );
+		return r;
 		#elseif neko
-		var r : Dynamic = _read( fd, wd );
-		if( r == null )
-			return null;
-		var events : Array<InotifyEvent> = Lib.nekoToHaxe( r );
-		//trace(events);
-		//var events : Array<InotifyEvent> = Lib.nekoToHaxe( r );
-		return events;
+		var r : Array<InotifyEvent> = _read( fd, wd );
+		return r;
 		#end
 	}
 
@@ -117,7 +147,7 @@ class Inotify {
 	static var _close = lib( 'close', 1 );
 
 	static inline function lib( f : String, n : Int = 0 ) : Dynamic {
-		//#if neko if( !moduleInit ) loadNekoAPI(); #end
+		#if neko if( !moduleInit ) loadNekoAPI(); #end
 		return Lib.load( moduleName, 'hxinotify_'+f, n );
 	}
 
