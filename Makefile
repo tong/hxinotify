@@ -40,7 +40,7 @@ endif
 all: ndll
 
 $(NDLL): src/*.cpp src/build.xml
-	@(cd src;haxelib run hxcpp build.xml $(NDLL_FLAGS);)
+	@(cd src && haxelib run hxcpp build.xml $(NDLL_FLAGS);)
 
 ndll: $(NDLL)
 

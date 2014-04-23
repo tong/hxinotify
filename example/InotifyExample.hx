@@ -4,7 +4,7 @@ import sys.FileSystem;
 import sys.io.Inotify;
 
 /*
-	A simple example of using hxinotify to monitor given path (or cwd) for filesystem events.
+	Example of using hxinotify to monitor given path (or cwd) for filesystem events.
 */
 class InotifyExample {
 
@@ -27,14 +27,31 @@ class InotifyExample {
 		println( 'Watching : $path' );
 
 		var inotify = new Inotify();
-		var wd = inotify.addWatch( path, Inotify.ALL_EVENTS );
+		//var wd = inotify.addWatch( path, Inotify.ALL_EVENTS );
+		var wd = inotify.addWatch( path,
+			Inotify.ACCESS |
+			Inotify.MODIFY |
+			Inotify.ATTRIB |
+			Inotify.CLOSE_WRITE |
+			Inotify.CLOSE_NOWRITE |
+			Inotify.OPEN |
+			Inotify.MOVED_FROM |
+			Inotify.MOVED_TO |
+			Inotify.CREATE |
+			Inotify.DELETE |
+			Inotify.DELETE_SELF |
+			Inotify.MOVE_SELF |
+			Inotify.CLOSE |
+			Inotify.MOVE |
+			Inotify.UNMOUNT
+		);
 		while( true ) {
-			var events = inotify.getEvents( wd );
-			if( events == null ) continue;
+			var events : Array<InotifyEvent>;
+			try events = inotify.getEvents( wd ) catch(e:Dynamic) {
+				trace(e);
+				continue;
+			}
 			for( e in events ) {
-				if( e == null ) { // WTF!
-					continue;
-				}
 				//trace(e);
 				var action =
 					if( e.mask & Inotify.ACCESS > 0 ) 'accessed';

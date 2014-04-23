@@ -1,8 +1,9 @@
 
 ## hxinotify
 
-1.0.1:
-	+ added haxedoc.xml
+1.1:
+	+ Fixed result array size
+	+ Added haxedoc.hxml
 
 1.0:
 	+ Initial release
