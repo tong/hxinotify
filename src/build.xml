@@ -10,7 +10,7 @@
 	<set name="ROOT" value="../" unless="ROOT"/>
 
 	<files id="files">
-		 <file name="hxinotify.cpp"/>
+		 <file name="inotify.cpp"/>
 	</files>
 
 	<target id="inotify.ndll" tool="linker" toolid="dll" output="inotify">

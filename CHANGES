@@ -1,6 +1,11 @@
 
 ## hxinotify
 
+1.1.1:
+	+ Removed hxinotify.h
+	+ Static cpp methods
+	+ Renamed hxinotify.cpp : inotify.cpp
+
 1.1:
 	+ Fixed result array size
 	+ Added haxedoc.hxml

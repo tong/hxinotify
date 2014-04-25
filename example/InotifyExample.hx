@@ -46,13 +46,8 @@ class InotifyExample {
 			Inotify.UNMOUNT
 		);
 		while( true ) {
-			var events : Array<InotifyEvent>;
-			try events = inotify.getEvents( wd ) catch(e:Dynamic) {
-				trace(e);
-				continue;
-			}
+			var events = inotify.getEvents( wd );
 			for( e in events ) {
-				//trace(e);
 				var action =
 					if( e.mask & Inotify.ACCESS > 0 ) 'accessed';
 					else if( e.mask & Inotify.MODIFY > 0 ) 'modified';
@@ -65,15 +60,13 @@ class InotifyExample {
 					else if( e.mask & Inotify.MOVED_TO > 0 ) 'moved to';
 					else if( e.mask & Inotify.CREATE > 0 ) 'created';
 					else if( e.mask & Inotify.DELETE > 0 ) 'deleted';
-					//else if( e.mask & Inotify.DELETE_SELF > 0 ) 
-					//else if( e.mask & Inotify.MOVE_SELF > 0 ) 
 					else if( e.mask & Inotify.ATTRIB > 0 ) null;
 					else null;
 				if( action != null ) {
-					var type = ( e.mask & Inotify.ISDIR > 0 ) ? 'directory' : 'file';
-					var name = (e.name!=null) ? ' "${e.name}"' : '';					
+					var type = (e.mask & Inotify.ISDIR > 0) ? 'directory' : 'file';
+					var name = (e.name != null) ? '"${e.name}"' : '';					
 					var now = DateTools.format( Date.now(), '%H:%M:%S' );
-					println( now+' $type$name was $action' );
+					println( now+' $type $name $action' );
 				}
 			}
 		}

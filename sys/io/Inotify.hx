@@ -2,42 +2,6 @@ package sys.io;
 
 import #if cpp cpp #else neko #end.Lib;
 
-using Lambda;
-
-/*
-@:enum abstract InotifyEventType(Int) {
-	
-	var ACCESS = 0x00000001;
-	var MODIFY = 0x00000002;
-	var ATTRIB = 0x00000004;
-	var CLOSE_WRITE = 0x00000008;
-	var CLOSE_NOWRITE = 0x00000010;
-	var OPEN = 0x00000020;
-	var MOVED_FROM = 0x00000040;
-	var MOVED_TO = 0x00000080;
-	var CREATE = 0x00000100;
-	var DELETE = 0x00000200;
-	var DELETE_SELF = 0x00000400;
-	var MOVE_SELF = 0x00000800;
-
-	var CLOSE = 24; // CLOSE_WRITE | CLOSE_NOWRITE;
-	var MOVE = 192; // MOVED_FROM | MOVED_TO;
-
-	var UNMOUNT = 0x00002000;
-	var Q_OVERFLOW = 0x00004000;
-	var IGNORED = 0x00008000;
-	
-	var ONLYDIR = 0x01000000;
-	var DONT_FOLLOW = 0x02000000;
-	var EXCL_UNLINK = 0x04000000;
-	var MASK_ADD = 0x20000000;
-	var ISDIR = 0x40000000;
-	var ONESHOT = 0x80000000;
-	
-	var ALL = 4095;
-}
-*/
-
 typedef InotifyEvent = {
 
 	/** Watch descriptor */
@@ -52,12 +16,18 @@ typedef InotifyEvent = {
 	/** Size of "name" field */
 	var len : Int;
 
-	/** Optional null-terminated name (contains file name not path) */
+	/** Optional null-terminated filename associated with this event (local to parent directory) */
 	var name : String;
 }
 
 /**
 	Inode-based filesystem notification.
+
+	Linux kernel subsystem that acts to extend filesystems to notice changes to the filesystem, and report those changes to applications.
+
+	Inotify does not support recursively watching directories, meaning that a separate inotify watch must be created for every subdirectory.
+	
+	Inotify does report some but not all events in sysfs and procfs
 */
 @:require(sys&&(cpp||neko))
 class Inotify {
@@ -124,7 +94,7 @@ class Inotify {
 	}
 
 	/**
-		Read availble results
+		Read available events
 	*/
 	public function getEvents( wd : Int ) : Array<InotifyEvent> {
 		#if cpp

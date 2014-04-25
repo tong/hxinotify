@@ -1,6 +1,6 @@
 {
   "name": "inotify",
-  "version": "1.1.0",
+  "version": "1.1.1-alpha",
   "description": "Cpp/Neko linux-inotify bindings",
   "tags": ["inotify","linux","filesystem","monitor","io","neko","cpp","sys","kernel"],
   "url": "https://github.com/tong/hxinotify",
