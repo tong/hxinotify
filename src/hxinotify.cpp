@@ -1,6 +1,14 @@
 
-#include "hxinotify.h"
+#define IMPLEMENT_API
+#define NEKO_COMPATIBLE
+
+#include <hx/CFFI.h>
+#include <unistd.h>
 #include <string.h>
+#include <sys/inotify.h>
+
+#define EVENT_SIZE ( sizeof (struct inotify_event) )
+#define BUF_LEN ( 1024 * ( EVENT_SIZE + 16 ) ) // 1024 events
 
 static void throwErrno() { // Thread safe usage of strerror
 	char buf[256];
@@ -14,27 +22,27 @@ static void throwError( char * err) {
 	val_throw( alloc_string( err ) );
 }
 
-value hxinotify_init( value flags ) {
+static value hxinotify_init( value flags ) {
 	int fd = inotify_init1( val_int( flags ) );
 	if( fd < 0 )
 		val_throw( alloc_string( "inotify_init" ) );
 	return alloc_int( fd );
 }
 
-value hxinotify_add_watch( value _fd, value _path, value _mask ) {
+static value hxinotify_add_watch( value _fd, value _path, value _mask ) {
 	int wd = inotify_add_watch( val_int( _fd ), val_string( _path ), val_int( _mask ) );
 	if( wd < 0 )
 		throwErrno();
 	return alloc_int( wd );
 }
 
-value hxinotify_rm_watch( value fd, value wd ) {
+static value hxinotify_rm_watch( value fd, value wd ) {
 	if( inotify_rm_watch( val_int( fd ), val_int( wd ) ) == -1 )
 		throwErrno();
 	return alloc_null();
 }
 
-value hxinotify_read( value fd, value wd ) {
+static value hxinotify_read( value fd, value wd ) {
 
 	val_check(fd,int);
 	val_check(wd,int);
@@ -68,7 +76,13 @@ value hxinotify_read( value fd, value wd ) {
 	return events;
 }
 
-value hxinotify_close( value fd ) {
+static value hxinotify_close( value fd ) {
 	(void) close( val_int(fd) );
 	return alloc_null();
 }
+
+DEFINE_PRIM( hxinotify_init, 1 );
+DEFINE_PRIM( hxinotify_add_watch, 3 );
+DEFINE_PRIM( hxinotify_rm_watch, 2 );
+DEFINE_PRIM( hxinotify_read, 2 );
+DEFINE_PRIM( hxinotify_close, 1 );
