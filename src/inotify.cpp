@@ -7,38 +7,26 @@
 #include <string.h>
 #include <sys/inotify.h>
 
-#define EVENT_SIZE ( sizeof (struct inotify_event) )
-#define BUF_LEN ( 1024 * ( EVENT_SIZE + 16 ) ) // 1024 events
-
-static void throwErrno() { // Thread safe usage of strerror
-	char buf[256];
-	if( strerror_r( errno, buf, 256 ) == 0 )
-		val_throw( alloc_string( buf ) );
-	else
-		val_throw( alloc_string( strerror( errno ) ) );
-}
-
-static void throwError( char * err) {
-	val_throw( alloc_string( err ) );
-}
+#define EVENT_SIZE (sizeof (struct inotify_event))
+#define BUF_LEN (1024 * (EVENT_SIZE + 16)) // 1024 events
 
 static value hxinotify_init( value flags ) {
 	int fd = inotify_init1( val_int( flags ) );
 	if( fd < 0 )
-		val_throw( alloc_string( "inotify_init" ) );
+		val_throw( alloc_string( "inotify init" ) );
 	return alloc_int( fd );
 }
 
 static value hxinotify_add_watch( value _fd, value _path, value _mask ) {
 	int wd = inotify_add_watch( val_int( _fd ), val_string( _path ), val_int( _mask ) );
 	if( wd < 0 )
-		throwErrno();
+		val_throw( alloc_string( "inotify add watch" ) );
 	return alloc_int( wd );
 }
 
 static value hxinotify_rm_watch( value fd, value wd ) {
 	if( inotify_rm_watch( val_int( fd ), val_int( wd ) ) == -1 )
-		throwErrno();
+		val_throw( alloc_string( "inotify rm watch" ) );
 	return alloc_null();
 }
 
@@ -53,11 +41,10 @@ static value hxinotify_read( value fd, value wd ) {
 	int size;
 
 	len = read( val_int(fd), buf, BUF_LEN );
-	if( !len ) {
-		//printf( "buf length too small\n" );
+	if( !len )
 		val_throw( alloc_string( "inotify read" ) );
-	}
-	size = len / ( EVENT_SIZE * 2 );
+
+	size = len / (EVENT_SIZE * 2);
 	value events = alloc_array( size );
 	//while( i < len ) {
 	while( j < size ) {
