@@ -56,7 +56,7 @@ haxedoc.xml: sys/io/Inotify.hx
 	haxe haxedoc.hxml
 
 inotify.zip: clean ndll haxedoc.xml
-	zip -r $@ ndll/ src/*.cpp src/build.xml sys/io/Inotify.hx haxedoc.hxml haxelib.json Makefile README.md -x _*
+	zip -r $@ ndll/ src/*.cpp src/build.xml sys/io/Inotify.hx haxedoc.xml haxelib.json Makefile README.md -x _*
 
 haxelib: inotify.zip
 
