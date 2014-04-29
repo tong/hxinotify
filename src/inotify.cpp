@@ -11,6 +11,7 @@
 #define BUF_LEN (1024 * (EVENT_SIZE + 16)) // 1024 events
 
 static value hxinotify_init( value flags ) {
+	val_check(flags,int);
 	int fd = inotify_init1( val_int( flags ) );
 	if( fd < 0 )
 		val_throw( alloc_string( "inotify init" ) );
@@ -18,6 +19,9 @@ static value hxinotify_init( value flags ) {
 }
 
 static value hxinotify_add_watch( value _fd, value _path, value _mask ) {
+	val_check(_fd,int);
+	val_check(_path,string);
+	val_check(_mask,int);
 	int wd = inotify_add_watch( val_int( _fd ), val_string( _path ), val_int( _mask ) );
 	if( wd < 0 )
 		val_throw( alloc_string( "inotify add watch" ) );
@@ -25,6 +29,8 @@ static value hxinotify_add_watch( value _fd, value _path, value _mask ) {
 }
 
 static value hxinotify_rm_watch( value fd, value wd ) {
+	val_check(fd,int);
+	val_check(wd,int);
 	if( inotify_rm_watch( val_int( fd ), val_int( wd ) ) == -1 )
 		val_throw( alloc_string( "inotify rm watch" ) );
 	return alloc_null();
