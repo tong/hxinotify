@@ -1,4 +1,3 @@
---no-output
--neko api.n
 -xml haxedoc.xml
+-cp src/
 sys.io.Inotify

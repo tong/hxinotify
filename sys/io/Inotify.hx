@@ -1,6 +1,6 @@
 package sys.io;
 
-import #if cpp cpp #else neko #end.Lib;
+//import #if cpp cpp #else neko #end.Lib;
 
 typedef InotifyEvent = {
 
@@ -29,7 +29,7 @@ typedef InotifyEvent = {
 	
 	Inotify does report some but not all events in sysfs and procfs
 */
-@:require(sys&&(cpp||neko))
+//@:require(sys&&(cpp||neko))
 class Inotify {
 
 	public static inline var NONBLOCK = 04000;
@@ -83,6 +83,8 @@ class Inotify {
 		return _add_watch( fd, untyped path.__s, mask );
 		#elseif cpp
 		return _add_watch( fd, path, mask );
+		#else
+		return 0;
 		#end
 	}
 
@@ -103,6 +105,8 @@ class Inotify {
 		#elseif neko
 		var r : Array<InotifyEvent> = _read( fd, wd );
 		return r;
+		#else
+		return null;
 		#end
 	}
 
@@ -117,8 +121,14 @@ class Inotify {
 	static var _close = lib( 'close', 1 );
 
 	static inline function lib( f : String, n : Int = 0 ) : Dynamic {
-		#if neko if( !moduleInit ) loadNekoAPI(); #end
-		return Lib.load( moduleName, 'hxinotify_'+f, n );
+		#if neko
+		if( !moduleInit ) loadNekoAPI();
+		return neko.Lib.load( moduleName, 'hxinotify_'+f, n );
+		#elseif cpp
+		return cpp.Lib.load( moduleName, 'hxinotify_'+f, n );
+		#else
+		return null;
+		#end
 	}
 
 	static inline var moduleName = 'inotify';
@@ -128,7 +138,7 @@ class Inotify {
 	static var moduleInit = false;
 
 	static function loadNekoAPI() {
-		var init = Lib.load( moduleName, 'neko_init', 5 );
+		var init = neko.Lib.load( moduleName, 'neko_init', 5 );
 		if( init != null ) {
 			init( function(s) return new String(s), function(len:Int) { var r=[]; if(len > 0) r[len-1] = null; return r; }, null, true, false );
 			moduleInit = true;
