@@ -45,11 +45,13 @@ class InotifyExample {
 			Inotify.MOVE |
 			Inotify.UNMOUNT
 		);
+
 		while( true ) {
-			var events = inotify.getEvents( wd );
+			var events = inotify.getEvents();
 			for( e in events ) {
 				var action =
 					if( e.mask & Inotify.ACCESS > 0 ) 'accessed';
+					else if( e.mask & Inotify.DELETE > 0 ) 'deleted';
 					else if( e.mask & Inotify.MODIFY > 0 ) 'modified';
 					else if( e.mask & Inotify.CLOSE > 0 ) 'closed';
 					else if( e.mask & Inotify.CLOSE_WRITE > 0 ) 'closed and saved';
@@ -59,7 +61,6 @@ class InotifyExample {
 					else if( e.mask & Inotify.MOVED_FROM > 0 ) 'moved from';
 					else if( e.mask & Inotify.MOVED_TO > 0 ) 'moved to';
 					else if( e.mask & Inotify.CREATE > 0 ) 'created';
-					else if( e.mask & Inotify.DELETE > 0 ) 'deleted';
 					else if( e.mask & Inotify.ATTRIB > 0 ) null;
 					else null;
 				if( action != null ) {

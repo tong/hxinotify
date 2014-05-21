@@ -36,10 +36,9 @@ static value hxinotify_rm_watch( value fd, value wd ) {
 	return alloc_null();
 }
 
-static value hxinotify_read( value fd, value wd ) {
+static value hxinotify_read( value fd ) {
 
 	val_check(fd,int);
-	val_check(wd,int);
 
 	int len;
 	int i = 0, j = 0;
@@ -58,7 +57,7 @@ static value hxinotify_read( value fd, value wd ) {
 		e = (struct inotify_event *) &buf[i];
 		//printf ("\twd=%d mask=%u cookie=%u len=%u\n", e->wd, e->mask, e->cookie, e->len );
 		value o = alloc_empty_object();
-		alloc_field( o, val_id( "wd" ), wd );
+		alloc_field( o, val_id( "wd" ), alloc_int( e->wd ) );
 		alloc_field( o, val_id( "mask" ), alloc_int( e->mask ) );
 		alloc_field( o, val_id( "cookie" ), alloc_int( e->cookie ) );
 		alloc_field( o, val_id( "len" ), alloc_int( e->len ) );
@@ -77,5 +76,5 @@ static value hxinotify_close( value fd ) {
 DEFINE_PRIM( hxinotify_init, 1 );
 DEFINE_PRIM( hxinotify_add_watch, 3 );
 DEFINE_PRIM( hxinotify_rm_watch, 2 );
-DEFINE_PRIM( hxinotify_read, 2 );
+DEFINE_PRIM( hxinotify_read, 1 );
 DEFINE_PRIM( hxinotify_close, 1 );

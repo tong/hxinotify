@@ -98,12 +98,13 @@ class Inotify {
 	/**
 		Read available events
 	*/
-	public function getEvents( wd : Int ) : Array<InotifyEvent> {
+	public function getEvents() : Array<InotifyEvent> {
+	//public function getEvents( wd : Int ) : Array<InotifyEvent> {
 		#if cpp
-		var r : Array<InotifyEvent> =  _read( fd, wd );
+		var r : Array<InotifyEvent> = _read( fd );
 		return r;
 		#elseif neko
-		var r : Array<InotifyEvent> = _read( fd, wd );
+		var r : Array<InotifyEvent> = _read( fd );
 		return r;
 		#else
 		return null;
@@ -117,7 +118,7 @@ class Inotify {
 	static var _init = lib( 'init', 1 );
 	static var _add_watch = lib( 'add_watch', 3 );
 	static var _rm_watch = lib( 'rm_watch', 2 );
-	static var _read = lib( 'read', 2 );
+	static var _read = lib( 'read', 1 );
 	static var _close = lib( 'close', 1 );
 
 	static inline function lib( f : String, n : Int = 0 ) : Dynamic {
