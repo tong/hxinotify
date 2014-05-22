@@ -29,7 +29,7 @@ endif
 
 SRC=sys/io/Inotify*.hx
 SRC_EXAMPLE=$(SRC) example/*.hx example/*.hxml
-NDLL=ndll/$(OS)/inotify.ndll
+NDLL=ndll/$(OS)/$(PROJECT).ndll
 
 ifeq (${debug},true)
 	HX_DEMO+=-debug
@@ -61,18 +61,18 @@ inotify.zip: clean ndll haxedoc.xml
 haxelib: inotify.zip
 
 install: haxelib
-	haxelib local inotify.zip
+	haxelib local $(PROJECT).zip
 
 uninstall:
-	haxelib remove inotify
+	haxelib remove $(PROJECT)
 
 clean:
 	rm -rf example/cpp
-	rm -f example/inotify-example*
+	rm -f example/$(PROJECT)-example*
 	rm -rf ndll/$(OS)
 	rm -rf src/obj
 	rm -f src/all_objs
-	rm -f inotify.zip
+	rm -f $(PROJECT).zip
 	rm -f haxedoc.xml
 
 .PHONY: ndll example-cpp example-neko examples haxelib install uninstall clean
