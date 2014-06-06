@@ -15,36 +15,42 @@ class InotifyExample {
 			Sys.exit(1);
 		}
 
-		var path = Sys.args()[0];
-		if( path == null  )
-			path = Sys.getCwd();
-		path = FileSystem.fullPath( path );
-		if( !FileSystem.exists( path ) ) {
-			println( 'Path not found : $path' );
-			Sys.exit(1);
-		}
-
-		println( 'Watching : $path' );
+		var paths = new Array<String>();
+		var args = Sys.args();
+		if( args.length > 0 ) {
+			for( path in args ) {
+				if( !FileSystem.exists( path ) )
+					throw 'path not found ($path)';
+				paths.push( path );
+			}
+		} else
+			paths.push( Sys.getCwd() );
 
 		var inotify = new Inotify();
-		//var wd = inotify.addWatch( path, Inotify.ALL_EVENTS );
-		var wd = inotify.addWatch( path,
-			Inotify.ACCESS |
-			Inotify.MODIFY |
-			Inotify.ATTRIB |
-			Inotify.CLOSE_WRITE |
-			Inotify.CLOSE_NOWRITE |
-			Inotify.OPEN |
-			Inotify.MOVED_FROM |
-			Inotify.MOVED_TO |
-			Inotify.CREATE |
-			Inotify.DELETE |
-			Inotify.DELETE_SELF |
-			Inotify.MOVE_SELF |
-			Inotify.CLOSE |
-			Inotify.MOVE |
-			Inotify.UNMOUNT
-		);
+		var wds = new Array<Int>();
+		for( path in paths ) {
+			//var wd = inotify.addWatch( path, Inotify.ALL_EVENTS );
+			var wd = inotify.addWatch( path,
+				Inotify.ACCESS |
+				Inotify.MODIFY |
+				Inotify.ATTRIB |
+				Inotify.CLOSE_WRITE |
+				Inotify.CLOSE_NOWRITE |
+				Inotify.OPEN |
+				Inotify.MOVED_FROM |
+				Inotify.MOVED_TO |
+				Inotify.CREATE |
+				Inotify.DELETE |
+				Inotify.DELETE_SELF |
+				Inotify.MOVE_SELF |
+				Inotify.CLOSE |
+				Inotify.MOVE |
+				Inotify.UNMOUNT
+			);
+			wds.push( wd );
+		}
+
+		println( 'Watching: '+paths );
 
 		while( true ) {
 			var events = inotify.getEvents();
@@ -71,7 +77,8 @@ class InotifyExample {
 				}
 			}
 		}
-		inotify.removeWatch( wd );
+		for( wd in wds )
+			inotify.removeWatch( wd );
 		inotify.close();
 	}
 
