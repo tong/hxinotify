@@ -69,6 +69,7 @@ static value hxinotify_read( value fd ) {
 }
 
 static value hxinotify_close( value fd ) {
+	val_check(fd,int);
 	(void) close( val_int(fd) );
 	return alloc_null();
 }
