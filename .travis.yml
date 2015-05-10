@@ -1,0 +1,17 @@
+language: haxe
+
+os:
+  - linux
+
+install:
+  - haxelib install hxcpp
+
+script:
+  - make
+  - cd example
+  - haxe build-cpp.hxml
+  - haxe build-neko.hxml
+
+notifications:
+  email:
+	- tong@disktree.net
