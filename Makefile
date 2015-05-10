@@ -1,7 +1,5 @@
 
-##
 ## hxinotify
-##
 
 PROJECT=inotify
 OS=Linux

@@ -1,6 +1,9 @@
 
 ## hxinotify
 
+1.2.1:
+	+ Fix
+
 1.2:
 	+ Removed hxinotify.h
 	+ Static cpp methods
@@ -8,7 +11,7 @@
 	+ Removed throwErrno
 	+ Added value checks
 	+ Fixed write descriptor event
-		
+
 1.1:
 	+ Fixed result array size
 	+ Added haxedoc.hxml
