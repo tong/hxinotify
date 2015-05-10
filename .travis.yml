@@ -5,9 +5,10 @@ os:
 
 install:
   - haxelib install hxcpp
+  - haxelib install inotify
+  - make install
 
 script:
-  - make
   - cd example
   - haxe build-cpp.hxml
   - haxe build-neko.hxml
