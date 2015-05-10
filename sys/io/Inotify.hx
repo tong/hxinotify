@@ -1,7 +1,5 @@
 package sys.io;
 
-//import #if cpp cpp #else neko #end.Lib;
-
 typedef InotifyEvent = {
 
 	/** Watch descriptor */
@@ -24,16 +22,13 @@ typedef InotifyEvent = {
 	Inode-based filesystem notification.
 
 	Linux kernel subsystem that acts to extend filesystems to notice changes to the filesystem, and report those changes to applications.
-
 	Inotify does not support recursively watching directories, meaning that a separate inotify watch must be created for every subdirectory.
-	
-	Inotify does report some but not all events in sysfs and procfs
+	Inotify does report some but not all events in sysfs and procfs.
 */
-//@:require(sys&&(cpp||neko))
 class Inotify {
 
-	public static inline var NONBLOCK = 04000;
-	public static inline var CLOEXEC = 02000000;
+	public static inline var NONBLOCK = 0x04000;
+	public static inline var CLOEXEC = 0x02000000;
 
 	public static inline var ACCESS = 0x00000001;
 	public static inline var MODIFY = 0x00000002;
@@ -47,21 +42,21 @@ class Inotify {
 	public static inline var DELETE = 0x00000200;
 	public static inline var DELETE_SELF = 0x00000400;
 	public static inline var MOVE_SELF = 0x00000800;
-	
+
 	public static inline var CLOSE = CLOSE_WRITE | CLOSE_NOWRITE;
 	public static inline var MOVE = MOVED_FROM | MOVED_TO;
 
 	public static inline var UNMOUNT = 0x00002000;
 	public static inline var Q_OVERFLOW = 0x00004000;
 	public static inline var IGNORED = 0x00008000;
-	
+
 	public static inline var ONLYDIR = 0x01000000;
 	public static inline var DONT_FOLLOW = 0x02000000;
 	public static inline var EXCL_UNLINK = 0x04000000;
 	public static inline var MASK_ADD = 0x20000000;
 	public static inline var ISDIR = 0x40000000;
 	public static inline var ONESHOT = 0x80000000;
-	
+
 	public static inline var ALL_EVENTS = ACCESS | MODIFY | ATTRIB | CLOSE_WRITE
 		| CLOSE_NOWRITE | OPEN | MOVED_FROM | MOVED_TO | CREATE | DELETE
 		| DELETE_SELF | MOVE_SELF;
@@ -73,7 +68,7 @@ class Inotify {
 	public function new( nonBlock : Bool = false, closeOnExec : Bool = false ) {
 		fd = _init( (nonBlock ? NONBLOCK : 0) | (closeOnExec ? CLOEXEC : 0) );
 	}
-	
+
 	/**
 		Adds a new watch, or modifies an existing watch, for the file whose location is specified in path.
 	*/
@@ -112,6 +107,7 @@ class Inotify {
 	}
 
 	/**
+		Remove all watches and close the file descriptor
 	*/
 	public function close() _close( fd );
 
@@ -148,5 +144,5 @@ class Inotify {
 	}
 
 	#end
-	
+
 }
