@@ -6,6 +6,5 @@
   "url": "https://github.com/tong/hxinotify",
   "license": "Public",
   "contributors": ["tong"],
-  "releasenote": "See CHANGES",
-  "dependencies": {}
+  "releasenote": "See CHANGES"
 }
