@@ -13,5 +13,4 @@ script:
   - haxe build-neko.hxml
 
 notifications:
-  email:
-	- tong@disktree.net
+  email: false
