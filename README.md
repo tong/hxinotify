@@ -2,6 +2,8 @@ HXINOTIFY
 =========
 Haxe/Cpp/Neko bindings to [inotify](http://en.wikipedia.org/wiki/Inotify), a inode-based filesystem notification technology for monitoring filesystem events.
 
+[![Build Status](https://travis-ci.org/tong/hxinotify.svg?branch=master)](https://travis-ci.org/tong/hxinotify)
+
 Inotify can be used for:
 * Detecting changes in files and directories (e.g. configuration files, mail directories)
 * Guarding critical files and their eventual automatic recovery
