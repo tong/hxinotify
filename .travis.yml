@@ -9,7 +9,4 @@ install:
 script:
   - haxe haxedoc.hxml
   - make ndll
-  - mv ndll/Linux64/inotify.ndll ~/example/
-  - cd example
-  - haxe build-cpp.hxml
-  - haxe build-neko.hxml
+  - make examples
