@@ -1,4 +1,4 @@
--cp ..
+-cp ../src
 -main InotifyExample
 -cpp cpp
 -cmd cp cpp/InotifyExample inotify-example

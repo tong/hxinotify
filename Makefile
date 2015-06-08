@@ -25,7 +25,7 @@ ifeq (${os},android)
 	HXCPP_FLAGS=-D android
 endif
 
-SRC=sys/io/Inotify*.hx
+SRC=src/sys/io/Inotify*.hx
 SRC_EXAMPLE=$(SRC) example/*.hx example/*.hxml
 NDLL=ndll/$(OS)/$(PROJECT).ndll
 
@@ -37,8 +37,8 @@ endif
 
 all: ndll
 
-$(NDLL): src/*.cpp src/build.xml
-	@(cd src && haxelib run hxcpp build.xml $(NDLL_FLAGS);)
+$(NDLL): project/*.cpp project/build.xml
+	@(cd project && haxelib run hxcpp build.xml $(NDLL_FLAGS);)
 
 ndll: $(NDLL)
 
@@ -50,11 +50,11 @@ example-neko: $(SRC_EXAMPLE)
 
 examples: example-neko example-cpp
 
-haxedoc.xml: sys/io/Inotify.hx
+haxedoc.xml: $(SRC)
 	haxe haxedoc.hxml
 
 inotify.zip: clean ndll haxedoc.xml
-	zip -r $@ ndll/ src/*.cpp src/build.xml sys/io/Inotify.hx haxedoc.xml haxelib.json Makefile README.md -x _*
+	zip -r $@ ndll/ src/sys/io/Inotify.hx haxedoc.xml haxelib.json README.md -x _*
 
 haxelib: inotify.zip
 
@@ -68,8 +68,8 @@ clean:
 	rm -rf example/cpp
 	rm -f example/$(PROJECT)-example*
 	rm -rf ndll/$(OS)
-	rm -rf src/obj
-	rm -f src/all_objs
+	rm -rf project/obj
+	rm -f project/all_objs
 	rm -f $(PROJECT).zip
 	rm -f haxedoc.xml
 
