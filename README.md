@@ -1,5 +1,5 @@
-HXINOTIFY
-=========
+# HXINOTIFY
+
 Haxe/Cpp/Neko bindings to [inotify](http://en.wikipedia.org/wiki/Inotify), a inode-based filesystem notification technology for monitoring filesystem events.
 
 [![Build Status](https://travis-ci.org/tong/hxinotify.svg?branch=master)](https://travis-ci.org/tong/hxinotify)
