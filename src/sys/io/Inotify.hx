@@ -25,6 +25,7 @@ typedef InotifyEvent = {
 	Inotify does not support recursively watching directories, meaning that a separate inotify watch must be created for every subdirectory.
 	Inotify does report some but not all events in sysfs and procfs.
 */
+@:require(sys)
 class Inotify {
 
 	public static inline var NONBLOCK = 0x04000;
