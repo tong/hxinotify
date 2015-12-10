@@ -1,6 +1,9 @@
 *sublime-*
 TODO
 *.o
+example/cpp/
+example/*.n
+example/inotify-example*
 src/all_objs
 src/obj
 *.zip

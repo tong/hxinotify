@@ -1,5 +1,38 @@
 package sys.io;
 
+@:enum abstract InotifyMask(Int) from Int to Int {
+
+	var NONBLOCK = 0x04000;
+	var CLOEXEC = 0x02000000;
+
+	var ACCESS = 0x00000001;
+	var MODIFY = 0x00000002;
+	var ATTRIB = 0x00000004;
+	var CLOSE_WRITE = 0x00000008;
+	var CLOSE_NOWRITE = 0x00000010;
+	var OPEN = 0x00000020;
+	var MOVED_FROM = 0x00000040;
+	var MOVED_TO = 0x00000080;
+	var CREATE = 0x00000100;
+	var DELETE = 0x00000200;
+	var DELETE_SELF = 0x00000400;
+	var MOVE_SELF = 0x00000800;
+
+	var CLOSE = 0x00000008 | 0x00000010;
+	var MOVE = 0x00000040 | 0x00000080;
+
+	var UNMOUNT = 0x00002000;
+	var Q_OVERFLOW = 0x00004000;
+	var IGNORED = 0x00008000;
+
+	var ONLYDIR = 0x01000000;
+	var DONT_FOLLOW = 0x02000000;
+	var EXCL_UNLINK = 0x04000000;
+	var MASK_ADD = 0x20000000;
+	var ISDIR = 0x40000000;
+	var ONESHOT = 0x80000000;
+}
+
 typedef InotifyEvent = {
 
 	/** Watch descriptor */
@@ -28,45 +61,17 @@ typedef InotifyEvent = {
 @:require(sys)
 class Inotify {
 
-	public static inline var NONBLOCK = 0x04000;
-	public static inline var CLOEXEC = 0x02000000;
-
-	public static inline var ACCESS = 0x00000001;
-	public static inline var MODIFY = 0x00000002;
-	public static inline var ATTRIB = 0x00000004;
-	public static inline var CLOSE_WRITE = 0x00000008;
-	public static inline var CLOSE_NOWRITE = 0x00000010;
-	public static inline var OPEN = 0x00000020;
-	public static inline var MOVED_FROM = 0x00000040;
-	public static inline var MOVED_TO = 0x00000080;
-	public static inline var CREATE = 0x00000100;
-	public static inline var DELETE = 0x00000200;
-	public static inline var DELETE_SELF = 0x00000400;
-	public static inline var MOVE_SELF = 0x00000800;
-
-	public static inline var CLOSE = CLOSE_WRITE | CLOSE_NOWRITE;
-	public static inline var MOVE = MOVED_FROM | MOVED_TO;
-
-	public static inline var UNMOUNT = 0x00002000;
-	public static inline var Q_OVERFLOW = 0x00004000;
-	public static inline var IGNORED = 0x00008000;
-
-	public static inline var ONLYDIR = 0x01000000;
-	public static inline var DONT_FOLLOW = 0x02000000;
-	public static inline var EXCL_UNLINK = 0x04000000;
-	public static inline var MASK_ADD = 0x20000000;
-	public static inline var ISDIR = 0x40000000;
-	public static inline var ONESHOT = 0x80000000;
-
+	/*
 	public static inline var ALL_EVENTS = ACCESS | MODIFY | ATTRIB | CLOSE_WRITE
 		| CLOSE_NOWRITE | OPEN | MOVED_FROM | MOVED_TO | CREATE | DELETE
 		| DELETE_SELF | MOVE_SELF;
+	*/
 
 	var fd : Int;
 
 	/**
 	*/
-	public function new( nonBlock : Bool = false, closeOnExec : Bool = false ) {
+	public function new( nonBlock = false, closeOnExec = false ) {
 		fd = _init( (nonBlock ? NONBLOCK : 0) | (closeOnExec ? CLOEXEC : 0) );
 	}
 
@@ -96,14 +101,18 @@ class Inotify {
 	*/
 	public function getEvents() : Array<InotifyEvent> {
 	//public function getEvents( wd : Int ) : Array<InotifyEvent> {
+
 		#if cpp
 		var r : Array<InotifyEvent> = _read( fd );
 		return r;
+
 		#elseif neko
 		var r : Array<InotifyEvent> = _read( fd );
 		return r;
+
 		#else
 		return null;
+
 		#end
 	}
 

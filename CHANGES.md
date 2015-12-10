@@ -1,3 +1,8 @@
+
+### 1.2.3
+- @:require(sys)
+- @:enum abstract InotifyMask(Int) instead of inline class fields
+
 ### 1.2.2
 - Haxe source moved into src directory, cpp code into project
 - Exclude c++ source files from haxelib
