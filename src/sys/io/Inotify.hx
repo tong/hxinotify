@@ -2,34 +2,83 @@ package sys.io;
 
 @:enum abstract InotifyMask(Int) from Int to Int {
 
+	/** */
 	var NONBLOCK = 0x04000;
+
+	/** */
 	var CLOEXEC = 0x02000000;
 
+	/** File was accessed */
 	var ACCESS = 0x00000001;
+
+	/** File was modified. */
 	var MODIFY = 0x00000002;
+
+	/** Metadata changed */
 	var ATTRIB = 0x00000004;
+
+	/** File opened for writing was closed. */
 	var CLOSE_WRITE = 0x00000008;
+
+	/** File or directory not opened for writing was closed. */
 	var CLOSE_NOWRITE = 0x00000010;
+
+	/** File or directory was opened. */
 	var OPEN = 0x00000020;
+
+	/** Generated for the directory containing the old filename when a file is renamed. */
 	var MOVED_FROM = 0x00000040;
+
+	/** Generated for the directory containing the new filename when a file is renamed. */
 	var MOVED_TO = 0x00000080;
+
+	/** File/directory created in watched directory */
 	var CREATE = 0x00000100;
+
+	/** File/directory deleted from watched directory. */
 	var DELETE = 0x00000200;
+
+	/** Watched file/directory was itself deleted. */
 	var DELETE_SELF = 0x00000400;
+
+	/** Watched file/directory was itself moved. */
 	var MOVE_SELF = 0x00000800;
 
+	/** Equates to `IN_CLOSE_WRITE  IN_CLOSE_NOWRITE`. */
 	var CLOSE = 0x00000008 | 0x00000010;
+
+	/** Equates to `IN_MOVED_FROM | IN_MOVED_TO`. */
 	var MOVE = 0x00000040 | 0x00000080;
 
+	/** Filesystem containing watched object was unmounted. */
 	var UNMOUNT = 0x00002000;
+
+	/** */
 	var Q_OVERFLOW = 0x00004000;
+
+	/** Watch was removed explicitly (inotify_rm_watch(2)) or automatically (file was deleted, or filesystem was unmounted). */
 	var IGNORED = 0x00008000;
 
+	/**
+		Only watch pathname if it is a directory.
+
+		Using this flag  provides an application with a race-free way of ensuring that the monitored object is a directory.
+	*/
 	var ONLYDIR = 0x01000000;
+
+	/** Don't dereference pathname if it is a symbolic link. */
 	var DONT_FOLLOW = 0x02000000;
+
+	/** */
 	var EXCL_UNLINK = 0x04000000;
+
+	/** If a watch instance already exists for the filesystem object corresponding to pathname, add (OR) the events in mask to the watch mask (instead of replacing the mask). */
 	var MASK_ADD = 0x20000000;
+
+	/** Subject of this event is a directory. */
 	var ISDIR = 0x40000000;
+
+	/** Monitor the filesystem object corresponding to pathname for one event, then remove from watch list. */
 	var ONESHOT = 0x80000000;
 }
 
@@ -38,16 +87,25 @@ typedef InotifyEvent = {
 	/** Watch descriptor */
 	var wd : Int;
 
-	/** Mask of events */
+	/** Mask of events, bits that describe the event that occurred. */
 	var mask : Int;
 
 	/** Unique cookie associating related events */
 	var cookie : Int;
 
-	/** Size of "name" field */
+	/**
+		Size of `name` field.
+
+		The len field counts all of the bytes in name, including the null bytes; the length of each inotify_event structure is thus `sizeof(struct inotify_event)+len`.
+	*/
 	var len : Int;
 
-	/** Optional null-terminated filename associated with this event (local to parent directory) */
+	/**
+		Optional null-terminated filename associated with this event (local to parent directory).
+
+		The name field is present only when an event is returned for a file inside a watched directory; it identifies the filename within to the watched directory.
+		This filename is null-terminated, and may include further null bytes `('\0')` to align subsequent reads to a suitable address boundary.
+	*/
 	var name : String;
 }
 
@@ -78,7 +136,7 @@ class Inotify {
 	/**
 		Adds a new watch, or modifies an existing watch, for the file whose location is specified in path.
 	*/
-	public function addWatch( path : String, mask : Int ) : Int {
+	public function addWatch( path : String, mask : InotifyMask ) : Int {
 		path = FileSystem.fullPath( path );
 		#if neko
 		return _add_watch( fd, untyped path.__s, mask );
@@ -90,7 +148,7 @@ class Inotify {
 	}
 
 	/**
-		Removes the watch associated with the watch descriptor wd from the inotify instance
+		Removes the watch associated with the watch descriptor `wd` from the inotify instance.
 	*/
 	public function removeWatch( wd : Int ) {
 		_rm_watch( fd, wd );

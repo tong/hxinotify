@@ -1,9 +1,11 @@
-*sublime-*
-TODO
-*.o
+doc/
 example/cpp/
 example/*.n
 example/inotify-example*
 src/all_objs
 src/obj
+test/*.n
+*.o
 *.zip
+haxedoc.xml
+TODO*

@@ -8,7 +8,6 @@ haxe:
   - development
 
 matrix:
-  # Allow Haxe development to fail.
   allow_failures:
     - haxe: development
 

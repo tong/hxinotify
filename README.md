@@ -1,5 +1,5 @@
 
-# HXINOTIFY
+# Hxinotify
 
 Haxe-Cpp/Neko bindings to [inotify](http://en.wikipedia.org/wiki/Inotify), a inode-based filesystem notification technology for monitoring filesystem events.
 
