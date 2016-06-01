@@ -1,5 +1,4 @@
 -neko inotify-example.n
 -main InotifyExample
-#-lib inotify
--cp ../src
+-lib inotify
 -dce full
