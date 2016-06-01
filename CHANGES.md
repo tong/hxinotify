@@ -1,5 +1,5 @@
 
-### 1.2.3
+### 1.3.0
 - @:require(sys)
 - @:enum abstract InotifyMask(Int) instead of inline class fields
 

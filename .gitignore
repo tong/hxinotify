@@ -2,6 +2,7 @@ doc/
 example/cpp/
 example/*.n
 example/inotify-example*
+project/obj/*
 src/all_objs
 src/obj
 test/*.n
