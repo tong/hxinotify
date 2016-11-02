@@ -7,17 +7,21 @@
 	<include name="${HXCPP}/build-tool/BuildCommon.xml"/>
 
 	<set name="DBG" value="d" if="debug" />
+	<!--
 	<set name="ROOT" value="../" unless="ROOT"/>
+	-->
 
 	<files id="files">
 		 <file name="inotify.cpp"/>
 	</files>
 
 	<target id="inotify.ndll" tool="linker" toolid="dll" output="inotify">
-		<ext value=".ndll"/>
-		<outdir name="../ndll/${BINDIR}"/>
-		<flag value="${LIB_DIR}"/>
 		<files id="files"/>
+		<ext value=".ndll"/>
+		<outdir name="./../ndll/${BINDIR}" />
+		<!--
+		<flag value="${LIB_DIR}"/>
+		-->
 	</target>
 
 	<target id="default">
