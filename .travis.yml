@@ -13,6 +13,7 @@ matrix:
 
 install:
   - haxelib install hxcpp
+  - haxelib dev inotify .
 
 script:
   - haxe haxedoc.hxml
