@@ -14,11 +14,12 @@ matrix:
 
 install:
   - haxelib install hxcpp
+  - haxelib dev inotify .
 
 script:
   - haxe haxedoc.hxml
   - make ndll
-  - make examples
+  - haxe --cwd example/ build.hxml
 
 notifications:
   webhooks:
