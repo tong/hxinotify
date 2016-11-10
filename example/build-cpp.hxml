@@ -1,5 +1,0 @@
--cpp cpp
--main InotifyExample
--cp ../src
--cmd cp cpp/InotifyExample inotify-example
--dce full

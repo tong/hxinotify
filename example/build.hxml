@@ -1,0 +1,10 @@
+-main App
+-lib inotify
+-dce full
+--each
+
+--next
+-cpp cpp
+
+--next
+-neko app.n

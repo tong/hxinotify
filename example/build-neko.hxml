@@ -1,4 +1,0 @@
--neko inotify-example.n
--main InotifyExample
--lib inotify
--dce full

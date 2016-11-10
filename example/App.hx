@@ -3,10 +3,10 @@ import Sys.println;
 import sys.FileSystem;
 import sys.io.Inotify;
 
-/*
-	Example of using hxinotify to monitor given path (or cwd) for filesystem events.
+/**
+	Monitors filesystem events on given path (or cwd).
 */
-class InotifyExample {
+class App {
 
 	static function main() {
 
