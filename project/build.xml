@@ -1,18 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- hxinotify -->
-
 <xml>
 
 	<include name="${HXCPP}/build-tool/BuildCommon.xml"/>
 
 	<set name="DBG" value="d" if="debug" />
-	<!--
-	<set name="ROOT" value="../" unless="ROOT"/>
-	-->
 
 	<files id="files">
-		 <file name="inotify.cpp"/>
+		 <file name="hxinotify.cpp"/>
 	</files>
 
 	<target id="inotify.ndll" tool="linker" toolid="dll" output="inotify">
