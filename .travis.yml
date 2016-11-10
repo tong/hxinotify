@@ -5,6 +5,7 @@ os:
 
 haxe:
   - "3.2.1"
+  - "3.3.0-rc1"
   - development
 
 matrix:
