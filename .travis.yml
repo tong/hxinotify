@@ -18,4 +18,5 @@ install:
 script:
   - haxe haxedoc.hxml
   - make ndll
-  - haxe --cwd example/ build.hxml
+  - haxe --cwd example/ cpp.hxml
+  - haxe --cwd example/ neko.hxml
