@@ -1,6 +1,6 @@
 package sys.io;
 
-@:enum abstract InotifyMask(Int) from Int to Int {
+@:enum abstract Mask(Int) from Int to Int {
 
 	/** */
 	var NONBLOCK = 0x04000;
@@ -82,7 +82,7 @@ package sys.io;
 	var ONESHOT = 0x80000000;
 }
 
-typedef InotifyEvent = {
+typedef Event = {
 
 	/** Watch descriptor */
 	var wd : Int;
@@ -98,7 +98,7 @@ typedef InotifyEvent = {
 
 		The len field counts all of the bytes in name, including the null bytes; the length of each inotify_event structure is thus `sizeof(struct inotify_event)+len`.
 	*/
-	var len : Int;
+	//var len : Int;
 
 	/**
 		Optional null-terminated filename associated with this event (local to parent directory).
@@ -115,28 +115,20 @@ typedef InotifyEvent = {
 	Linux kernel subsystem that acts to extend filesystems to notice changes to the filesystem, and report those changes to applications.
 	Inotify does not support recursively watching directories, meaning that a separate inotify watch must be created for every subdirectory.
 	Inotify does report some but not all events in sysfs and procfs.
-*/
+**/
 @:require(sys)
 class Inotify {
 
-	/*
-	public static inline var ALL_EVENTS = ACCESS | MODIFY | ATTRIB | CLOSE_WRITE
-		| CLOSE_NOWRITE | OPEN | MOVED_FROM | MOVED_TO | CREATE | DELETE
-		| DELETE_SELF | MOVE_SELF;
-	*/
-
 	var fd : Int;
 
-	/**
-	*/
 	public function new( nonBlock = false, closeOnExec = false ) {
 		fd = _init( (nonBlock ? NONBLOCK : 0) | (closeOnExec ? CLOEXEC : 0) );
 	}
 
 	/**
 		Adds a new watch, or modifies an existing watch, for the file whose location is specified in path.
-	*/
-	public function addWatch( path : String, mask : InotifyMask ) : Int {
+	**/
+	public function addWatch( path : String, mask : Mask ) : Int {
 		path = FileSystem.fullPath( path );
 		#if neko
 		return _add_watch( fd, untyped path.__s, mask );
@@ -149,61 +141,70 @@ class Inotify {
 
 	/**
 		Removes the watch associated with the watch descriptor `wd` from the inotify instance.
-	*/
-	public function removeWatch( wd : Int ) {
-		_rm_watch( fd, wd );
+	**/
+	public function removeWatch( wd : Int ) : Int {
+		return _rm_watch( fd, wd );
 	}
 
 	/**
-		Read available events
-	*/
-	public function getEvents() : Array<InotifyEvent> {
-	//public function getEvents( wd : Int ) : Array<InotifyEvent> {
+		Read available inotify events.
 
-		#if cpp
-		var r : Array<InotifyEvent> = _read( fd );
-		return r;
-
-		#elseif neko
-		var r : Array<InotifyEvent> = _read( fd );
-		return r;
-
-		#else
-		return null;
-
-		#end
+		@param  size  Buffer size (1 event: sizeof(struct inotify_event) + (event name length))
+	**/
+	public function read( size = 4096 ) : Array<Event> {
+		var bytes = haxe.io.Bytes.alloc( size );
+		var length = _read( fd, bytes.getData(), size );
+		if( length < 0 )
+			throw 'inotify read '+length;
+		var events = new Array<Event>();
+		if( length > 0 ) {
+			var i = 0;
+			while( i < length ) {
+				var wd = bytes.getInt32( i );
+				var mask = bytes.getInt32( i + 4 );
+				var cookie = bytes.getInt32( i + 8 );
+				var len = bytes.getInt32( i + 12 );
+				var name : String = null;
+				if( len > 0 ) name = bytes.getString( i + 16, len );
+				events.push( { wd: wd, mask: mask, cookie: cookie, name: name } );
+				i += 16 + len;
+			}
+		}
+		return events;
 	}
 
 	/**
 		Remove all watches and close the file descriptor
-	*/
-	public function close() _close( fd );
+	**/
+	public function close() : Int {
+		return _close( fd );
+	}
 
 	static var _init = lib( 'init', 1 );
 	static var _add_watch = lib( 'add_watch', 3 );
 	static var _rm_watch = lib( 'rm_watch', 2 );
-	static var _read = lib( 'read', 1 );
+	static var _read = lib( 'read', 3 );
 	static var _close = lib( 'close', 1 );
 
 	static inline function lib( f : String, n : Int = 0 ) : Dynamic {
 		#if neko
 		if( !moduleInit ) loadNekoAPI();
-		return neko.Lib.load( moduleName, 'hxinotify_'+f, n );
+		return neko.Lib.load( MODULE_NAME, 'hxinotify_'+f, n );
 		#elseif cpp
-		return cpp.Lib.load( moduleName, 'hxinotify_'+f, n );
+		return cpp.Lib.load( MODULE_NAME, 'hxinotify_'+f, n );
 		#else
 		return null;
 		#end
 	}
 
-	static inline var moduleName = 'inotify';
+	static inline var MODULE_NAME = 'inotify';
 
 	#if neko
 
 	static var moduleInit = false;
 
 	static function loadNekoAPI() {
-		var init = neko.Lib.load( moduleName, 'neko_init', 5 );
+		var init = neko.Lib.load( MODULE_NAME, 'neko_init', 5 );
 		if( init != null ) {
 			init( function(s) return new String(s), function(len:Int) { var r=[]; if(len > 0) r[len-1] = null; return r; }, null, true, false );
 			moduleInit = true;
