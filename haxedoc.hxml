@@ -1,3 +1,5 @@
+--no-output
 -xml haxedoc.xml
 -lib inotify
+-D doc_gen
 sys.io.Inotify

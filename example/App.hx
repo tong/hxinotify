@@ -13,11 +13,12 @@ class App {
 
 		var path = Sys.args()[0];
 		if( path == null ) {
-			Sys.println( 'missing watch path argument' );
-			Sys.exit(1);
+			path = Sys.getCwd();
+			Sys.println( 'No path specified, using cwd' );
 		}
+		path = FileSystem.fullPath( path );
 		if( !FileSystem.exists( path ) ) {
-			Sys.println( 'watch path not found [$path]' );
+			Sys.println( 'Watch path not found [$path]' );
 			Sys.exit(1);
 		}
 

@@ -1,11 +1,9 @@
-doc/
+*.hl
+*.n
+docs/
 example/cpp/
-example/*.n
-example/inotify-example*
 ndll/*/*.hash
-project/obj/*
-src/all_objs
-src/obj
+lib/obj/*
 test/*.n
 *.o
 *.zip

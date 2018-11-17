@@ -1,4 +1,9 @@
 
+### 2.0.0
+- Read event data on haxe side
+- Hashlink support (https://github.com/tong/hlinotify)
+- All methods return status code
+
 ### 1.3.0
 - @:require(sys)
 - @:enum abstract InotifyMask(Int) instead of inline class fields

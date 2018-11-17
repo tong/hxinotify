@@ -13,10 +13,12 @@ matrix:
 
 install:
   - haxelib install hxcpp
+  - haxelib install hashlink
   - haxelib dev inotify .
 
 script:
   - haxe haxedoc.hxml
-  - make ndll
+  - make clean ndll
   - haxe --cwd example/ cpp.hxml
+  - haxe --cwd example/ hl.hxml
   - haxe --cwd example/ neko.hxml

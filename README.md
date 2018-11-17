@@ -1,21 +1,21 @@
 
 # HXInotify
 
-Haxe → C++/Neko bindings to [inotify](http://en.wikipedia.org/wiki/Inotify), a inode-based filesystem notification technology for monitoring filesystem events.
+[![Build Status](https://travis-ci.org/tong/hxinotify.svg?branch=master)](https://travis-ci.org/tong/hxinotify) [![Haxelib Version](https://img.shields.io/github/tag/tong/hxinotify.svg?style=flat&label=haxelib)](http://lib.haxe.org/p/inotify)
+
+Haxe C++/Hashlink/Neko bindings to [inotify](http://en.wikipedia.org/wiki/Inotify), a linux kernel subsystem that acts to extend filesystems to notice changes and report those changes to applications.
+
+It can be used to monitor individual files or directories.
+When a directory is monitored, inotify will return events for the directory itself, and for files inside the directory.
 
 Inotify can be used for:
-* Detecting changes in files and directories (e.g. configuration files, mail directories)
-* Guarding critical files and their eventual automatic recovery
-* File usage statistics and similar purposes
-* Automatic upload handling
-* Monitoring installations outside of packaging systems
-* Automatic on-change backup and/or versioning
-* Reflecting changes to search databases
-* ...
+ * Detecting changes in files and directories (e.g. configuration files, mail directories)
+ * Guarding critical files and their eventual automatic recovery
+ * File usage statistics and similar purposes
+ * Automatic upload handling
+ * Monitoring installations outside of packaging systems
+ * Automatic on-change backup and/or versioning
+ * Reflecting changes to search databases
+ * …
 
-Inotify is useful in many situations where reactions on file system changes are necessary.
-Without inotify it can be implemented by periodical (or manually requested) examining files and directories, but such way is slow and wastes processor time. Inotify brings very fast and economical method how to react on file system changes.
-
-HXInotify has no requirements except a supporting linux kernel (>=2.6.13).
-
-[![Build Status](https://travis-ci.org/tong/hxinotify.svg?branch=master)](https://travis-ci.org/tong/hxinotify) [![Haxelib Version](https://img.shields.io/github/tag/tong/hxinotify.svg?style=flat&label=haxelib)](http://lib.haxe.org/p/inotify)
+See: http://man7.org/linux/man-pages/man7/inotify.7.html

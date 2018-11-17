@@ -1,9 +1,8 @@
 
-PROJECT = inotify
-OS = Linux
 ARCH := $(shell sh -c 'uname -m 2>/dev/null || echo not')
+OS = Linux
 NDLL_FLAGS =
-HXCPP_FLAGS =
+#HXCPP_FLAGS =
 
 ifeq (${ARCH},x86_64)
 	OS = Linux64
@@ -20,12 +19,12 @@ ifeq (${os},android)
 endif
 
 SRC = src/sys/io/Inotify*.hx
-NDLL = ndll/$(OS)/$(PROJECT).ndll
+NDLL = ndll/$(OS)/inotify.ndll
 
 all: ndll haxedoc.xml
 
-$(NDLL): project/*.cpp project/build.xml
-	@(cd project && haxelib run hxcpp build.xml $(NDLL_FLAGS);)
+$(NDLL): lib/*.cpp lib/build.xml
+	@(cd lib && haxelib run hxcpp build.xml $(NDLL_FLAGS);)
 
 ndll: $(NDLL)
 
@@ -33,15 +32,9 @@ haxedoc.xml: $(SRC)
 	haxe haxedoc.hxml
 
 inotify.zip: clean ndll haxedoc.xml
-	zip -r $@ ndll/ src/sys/io/Inotify.hx haxedoc.xml haxelib.json README.md -x _*
+	zip -r $@ ndll/ src/ haxedoc.xml haxelib.json README.md -x _*
 
-haxelib: inotify.zip
-
-install: haxelib
-	haxelib local $(PROJECT).zip
-
-uninstall:
-	haxelib remove $(PROJECT)
+release: inotify.zip
 
 clean:
 	rm -rf doc/
@@ -49,7 +42,7 @@ clean:
 	rm -rf ndll/$(OS)
 	rm -rf project/obj
 	rm -f project/all_objs
-	rm -f $(PROJECT).zip
 	rm -f haxedoc.xml
+	rm -f inotify.zip
 
-.PHONY: ndll haxelib install uninstall clean
+.PHONY: all ndll release clean
