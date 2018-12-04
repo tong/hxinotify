@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xml>
+
+	<set name="OUTDIR" value="${NDLLDIR}/${BINDIR}"/>
+	<!--
+	<set name="SRCDIR" value="src"/>
+	-->
+
+	<files id="src" dir="./">
+		<file name="hxinotify.cpp"/>
+	</files>
+
+	<target id="ndll" tool="linker" toolid="dll" output="inotify">
+		<files id="src"/>
+		<ext value=".ndll"/>
+		<outdir name="${OUTDIR}" />
+	</target>
+
+	<target id="clean" tool="clean">
+		<dir name="obj"/>
+	</target>
+
+	<target id="default">
+		<target id="ndll"/>
+		<!--
+		<target id="hdll"/>
+		-->
+	</target>
+
+</xml>

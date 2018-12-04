@@ -3,8 +3,10 @@
 docs/
 example/cpp/
 ndll/*/*.hash
-lib/obj/*
+obj/
 test/*.n
+*.hdll
+*.hdll.hash
 *.o
 *.zip
 haxedoc.xml
