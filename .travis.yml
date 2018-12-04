@@ -18,7 +18,7 @@ install:
 
 script:
   - haxe haxedoc.hxml
-  - make clean ndll
+  - haxelib run hxcpp build.xml ndll
   - haxe --cwd example/ cpp.hxml
   - haxe --cwd example/ hl.hxml
   - haxe --cwd example/ neko.hxml
