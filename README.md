@@ -1,7 +1,7 @@
 
 # HXInotify
 
-[![Build Status](https://travis-ci.org/tong/hxinotify.svg?branch=master)](https://travis-ci.org/tong/hxinotify) [![Haxelib Version](https://img.shields.io/github/tag/tong/hxinotify.svg?style=flat&label=haxelib)](http://lib.haxe.org/p/inotify)
+[![Build Status](https://travis-ci.org/tong/hxinotify.svg?branch=master)](https://travis-ci.org/tong/hxinotify) [![Haxelib Version](https://img.shields.io/github/tag/tong/hxinotify.svg?style=flat&label=haxelib)](https://lib.haxe.org/p/inotify)
 
 Haxe C++/Hashlink/Neko bindings to [inotify](http://en.wikipedia.org/wiki/Inotify), a linux kernel subsystem that acts to extend filesystems to notice changes and report those changes to applications.
 
@@ -19,3 +19,11 @@ Inotify can be used for:
  * …
 
 See: http://man7.org/linux/man-pages/man7/inotify.7.html
+
+
+## Build
+
+Build `inotify.ndll` for cpp/neko:  
+`haxelib run hxcpp build.xml ndll`
+
+For hashlink: https://github.com/tong/hlinotify
