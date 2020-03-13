@@ -3,10 +3,10 @@
 
 [![Build Status](https://travis-ci.org/tong/hxinotify.svg?branch=master)](https://travis-ci.org/tong/hxinotify) [![Haxelib Version](https://img.shields.io/github/tag/tong/hxinotify.svg?style=flat&label=haxelib)](https://lib.haxe.org/p/inotify)
 
-Haxe C++/Hashlink/Neko bindings to [inotify](http://en.wikipedia.org/wiki/Inotify), a linux kernel subsystem that acts to extend filesystems to notice changes and report those changes to applications.
+Haxe-(C++|Hashlink|Neko) bindings to *inotify*, a linux kernel subsystem that acts to extend filesystems to notice changes and report those changes to applications.
 
-It can be used to monitor individual files or directories.
-When a directory is monitored, inotify will return events for the directory itself, and for files inside the directory.
+
+Inotify can be used to automatically update directory views, reload configuration files, log changes, backup, synchronize, and upload.
 
 Inotify can be used for:
  * Detecting changes in files and directories (e.g. configuration files, mail directories)
@@ -23,7 +23,6 @@ See: http://man7.org/linux/man-pages/man7/inotify.7.html
 
 ## Build
 
-Build `inotify.ndll` for cpp/neko:  
-`haxelib run hxcpp build.xml ndll`
+- C++/Neko (ndll): `haxelib run hxcpp build.xml`
 
-For hashlink: https://github.com/tong/hlinotify
+- Hashlink: https://github.com/tong/hlinotify
