@@ -26,3 +26,8 @@ See: http://man7.org/linux/man-pages/man7/inotify.7.html
 - C++/Neko (ndll): `haxelib run hxcpp build.xml`
 
 - Hashlink: https://github.com/tong/hlinotify
+
+
+## Usage
+
+https://github.com/tong/hxinotify/tree/master/example
