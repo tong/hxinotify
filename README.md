@@ -23,9 +23,15 @@ See: http://man7.org/linux/man-pages/man7/inotify.7.html
 
 ## Build
 
-- Cpp/Neko (ndll): `haxelib run hxcpp build.xml`
-- Hashlink: https://github.com/tong/hlinotify
+- Cpp/Neko (inotify.ndll)
+```sh
+haxelib run hxcpp build.xml
+```
 
+- Hashlink (inotify.hdll)
+```sh
+cc -o inotify.hdll -shared -std=c11 -O3 -Wall -m64 -fPIC -lhl hlinotify.c
+```
 
 ## Usage
 
