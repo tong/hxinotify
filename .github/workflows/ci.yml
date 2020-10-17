@@ -29,6 +29,7 @@ jobs:
           cd hashlink
           make
           sudo make install
+          cd ..
           cc -o inotify.hdll -shared -std=c11 -O3 -Wall -m64 -fPIC -lhl hlinotify.c
       - name: Build haxedoc.xml
         run: haxe haxedoc.hxml
