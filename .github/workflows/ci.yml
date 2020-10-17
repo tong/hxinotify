@@ -1,0 +1,32 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup haxe
+        run: |
+          sudo add-apt-repository ppa:haxe/releases -y
+          sudo apt-get update
+          sudo apt-get install haxe -y
+          mkdir ~/haxelib && haxelib setup ~/haxelib
+          haxelib dev inotify .
+          haxelib install hashlink
+          haxelib install hxcpp
+      - name: Build haxedoc.xml
+        run: haxe haxedoc.hxml
+      - name: Build ndll
+        run: haxelib run hxcpp build.xml ndll
+      - name: Build cpp example
+        run: haxe --cwd example/ cpp.hxml
+      - name: Build hl example
+        run: haxe --cwd example/ hl.hxml
+      - name: Build neko example
+        run: haxe --cwd example/ neko.hxml
