@@ -20,12 +20,18 @@ jobs:
           haxelib dev inotify .
           haxelib install hashlink
           haxelib install hxcpp
-      - name: Build haxedoc.xml
-        run: haxe haxedoc.hxml
       - name: Build ndll
         run: haxelib run hxcpp build.xml ndll
       - name: Build hdll
-        run: cc -o inotify.hdll -shared -std=c11 -O3 -Wall -m64 -fPIC -lhl hlinotify.c
+        run: |
+          sudo apt-get install libpng-dev libturbojpeg-dev libvorbis-dev libopenal-dev libsdl2-dev libmbedtls-dev libuv1-dev
+          git clone https://github.com/HaxeFoundation/hashlink.git
+          cd hashlink
+          make
+          sudo make install
+          cc -o inotify.hdll -shared -std=c11 -O3 -Wall -m64 -fPIC -lhl hlinotify.c
+      - name: Build haxedoc.xml
+        run: haxe haxedoc.hxml
       - name: Build cpp example
         run: haxe --cwd example/ cpp.hxml
       - name: Build hl example
