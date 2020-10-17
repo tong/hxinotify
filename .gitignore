@@ -3,6 +3,7 @@ _*
 *.n
 docs/
 example/cpp/
+example/hlc/
 ndll/*/*.hash
 obj/
 test/*.n
