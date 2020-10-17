@@ -24,6 +24,8 @@ jobs:
         run: haxe haxedoc.hxml
       - name: Build ndll
         run: haxelib run hxcpp build.xml ndll
+      - name: Build hdll
+        run: cc -o inotify.hdll -shared -std=c11 -O3 -Wall -m64 -fPIC -lhl hlinotify.c
       - name: Build cpp example
         run: haxe --cwd example/ cpp.hxml
       - name: Build hl example
