@@ -227,21 +227,28 @@ class Inotify {
 		var buf = haxe.io.Bytes.alloc( size );
 		var length = _read( fd, buf.getData(), size );
 		if( length < 0 )
-			throw 'inotify read';
+			return throw 'inotify read';
 		buf = buf.sub( 0, length );
 		var events = new Array<InotifyEvent>();
-		if( length > 0 ) {
-			var i = 0;
-			while( i < length ) {
-				var wd = buf.getInt32( i );
-				var mask = buf.getInt32( i + 4 );
-				var cookie = buf.getInt32( i + 8 );
-				var len = buf.getInt32( i + 12 );
-				var name : String = null;
-				if( len > 0 ) name = buf.getString( i + 16, len );
-				events.push( { wd: wd, mask: mask, cookie: cookie, name: name } );
-				i += 16 + len;
+		var i = 0;
+		while( i < length ) {
+			var wd : Int = buf.getInt32( i );
+			var mask : Int = buf.getInt32( i + 4 );
+			var cookie : Int = buf.getInt32( i + 8 );
+			var len = buf.getUInt16( i + 12 );
+			var name : String = null;
+			if( len > 0 ) {
+				name = buf.getString( i+16 , len );
+				//TODO wtf, dirty fuck
+				#if (cpp||neko)
+				var s = new StringBuf();
+				var j = 0;
+				while( name.charCodeAt(j) != 0 ) s.add( name.charAt(j++) );
+				name = s.toString();
+				#end
 			}
+			events.push( { wd: wd, mask: mask, cookie: cookie, name: name } );
+			i += 16 + len;
 		}
 		return events;
 		#end
