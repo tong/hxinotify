@@ -9,7 +9,9 @@
 static value hxinotify_init( value flags ) {
 	val_check(flags,int);
 	int fd;
+	//gc_enter_blocking();
 	fd = inotify_init1( val_int( flags ) );
+	//gc_exit_blocking();
 	return alloc_int( fd );
 }
 

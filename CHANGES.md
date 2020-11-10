@@ -1,3 +1,5 @@
+### 2.0.1
+- Fix neko/cpp file name length
 
 ### 2.0.0
 - Read event data on haxe side
