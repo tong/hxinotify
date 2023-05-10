@@ -2,7 +2,7 @@ package sys.io;
 
 /**
 **/
-@:enum abstract InotifyMask(Int) from Int to Int {
+enum abstract InotifyMask(Int) from Int to Int {
 
 	/**
 	**/
