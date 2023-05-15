@@ -3,7 +3,7 @@
 
 [![Actions Status](https://github.com/tong/hxinotify/workflows/CI/badge.svg)](https://github.com/tong/hxinotify) [![Haxelib Version](https://img.shields.io/github/tag/tong/hxinotify.svg?style=flat-square&colorA=EA8220&colorB=FBC707&label=haxelib)](http://lib.haxe.org/p/inotify/)
 
-Haxe-(Cpp|Hashlink|Neko) bindings to *inotify*, a linux kernel subsystem that acts to extend filesystems to notice changes and report those changes to applications.
+Haxe-Cpp|Hashlink|Neko bindings to **inotify**, a linux kernel subsystem that acts to extend filesystems to notice changes and report those changes to applications.
 
 
 Inotify can be used to automatically update directory views, reload configuration files, log changes, backup, synchronize, and upload.
