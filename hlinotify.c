@@ -24,7 +24,7 @@ HL_PRIM int HL_NAME(rm_watch)( int fd, int wd ) {
 HL_PRIM int HL_NAME(read)( int fd, vbyte *buf, int size ) {
 	ssize_t len;
 	len = read( fd, (char*)buf, size );
-	return len;
+	return (int)len;
 }
 
 HL_PRIM int HL_NAME(close)( int fd ) {
