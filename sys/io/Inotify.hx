@@ -166,23 +166,21 @@ typedef InotifyEvent = {
 	Inode-based filesystem notification.
 
 	Linux kernel subsystem that acts to extend filesystems to notice changes to the filesystem, and report those changes to applications.
-	Inotify does not support recursively watching directories, meaning that a separate inotify watch must be created for every subdirectory.
-	Inotify does report some but not all events in sysfs and procfs.
+
+	Inotify does not support recursively watching directories, meaning that a separate inotify watch must be created for every subdirectory. Inotify does report some but not all events in sysfs and procfs.
 
 	@see http://man7.org/linux/man-pages/man7/inotify.7.html
 **/
 @:require(sys)
 class Inotify {
 
-	var fd : Int;
+	public final fd : Int;
 
 	/**
 		Creates an inotify instance.
 	**/
 	public function new( nonBlock = false, closeOnExec = false ) {
-		#if !doc_gen
-		fd = _init( (nonBlock ? NONBLOCK : 0) | (closeOnExec ? CLOEXEC : 0) );
-		#end
+		fd = #if doc_gen 0 #else _init((nonBlock ? NONBLOCK:0) | (closeOnExec ? CLOEXEC:0))#end;
 	}
 
 	/**
