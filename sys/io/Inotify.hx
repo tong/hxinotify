@@ -225,15 +225,21 @@ class Inotify {
 	/**
 		Read available inotify events.
 
+		Blocks until at least one event is available, unless the instance was created with `nonBlock`,
+		in which case an empty array is returned when there are no events.
+
 		@param  size  Buffer size (1 event = `sizeof(struct inotify_event) + (event name length)`)
 		@returns  List of events occurred.
+		@throws  String  `inotify read failed (errno N)` on error
 	**/
 	public function read( size = 4096 ) : Array<InotifyEvent> {
 		#if doc_gen return null; #else
 		var buf = haxe.io.Bytes.alloc( size );
 		var length = _read( fd, buf.getData(), size );
-		if( length < 0 )
-			return throw 'inotify read';
+		if( length < 0 ) {
+			if( length == -E_AGAIN ) return [];
+			throw 'inotify read failed (errno ${-length})';
+		}
 		buf = buf.sub( 0, length );
 		var events = new Array<InotifyEvent>();
 		var i = 0;
@@ -268,6 +274,8 @@ class Inotify {
 	public function close() : Int {
 		return #if doc_gen 0 #else _close( fd ) #end;
 	}
+
+	static inline var E_AGAIN = 11; // Linux x86/arm errno value
 
 	#if (cpp||neko)
 
