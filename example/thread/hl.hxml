@@ -1,0 +1,3 @@
+-hl app.hl
+-main App
+-lib inotify
