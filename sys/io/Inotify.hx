@@ -199,7 +199,6 @@ class Inotify {
 		@returns  Watch descriptor, or `-errno` on failure
 	**/
 	public function addWatch( path : String, mask : InotifyMask ) : Int {
-		path = FileSystem.fullPath( path );
 		return #if doc_gen 0; #else
 			_add_watch(
 				fd,
