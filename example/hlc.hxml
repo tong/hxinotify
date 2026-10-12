@@ -1,0 +1,8 @@
+-hl hlc/main.c
+-main App
+-lib inotify
+
+# Build inotify.hdll in the repo root first (see README), then either let haxe run the generated Makefile:
+#   EXTRA_LDFLAGS="-L$PWD/.. -Wl,-rpath,$PWD/.." haxe hlc.hxml -D hlgen.makefile
+# or compile it directly:
+#   haxe hlc.hxml && cc -O3 -std=c11 -I hlc hlc/main.c -o hlc/main -L.. -Wl,-rpath,$PWD/.. -lhl -l:inotify.hdll -lm

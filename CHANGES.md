@@ -6,6 +6,7 @@
 - Native calls return `-errno` on failure
 - Blocking `read()` no longer stalls GC in other threads (hl, cpp)
 - `fd` is public (read-only)
+- Fix HL/C: primitives linked against libc's `inotify_*` functions; rebuild `inotify.hdll`
 - Ship native sources for building the ndll/hdll
 - RPi ndll is now 64-bit (aarch64); rebuild it on 32-bit Raspberry Pi OS
 
