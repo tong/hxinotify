@@ -3,16 +3,15 @@
 #define NEKO_COMPATIBLE
 
 #include <hx/CFFI.h>
+#include <errno.h>
 #include <unistd.h>
 #include <sys/inotify.h>
 
 static value hxinotify_init( value flags ) {
 	val_check(flags,int);
 	int fd;
-	//gc_enter_blocking();
 	fd = inotify_init1( val_int( flags ) );
-	//gc_exit_blocking();
-	return alloc_int( fd );
+	return alloc_int( fd < 0 ? -errno : fd );
 }
 
 static value hxinotify_add_watch( value fd, value path, value mask ) {
@@ -21,7 +20,7 @@ static value hxinotify_add_watch( value fd, value path, value mask ) {
 	val_check(mask,int);
 	int wd;
 	wd = inotify_add_watch( val_int(fd), val_string(path), val_int(mask) );
-	return alloc_int( wd );
+	return alloc_int( wd < 0 ? -errno : wd );
 }
 
 static value hxinotify_rm_watch( value fd, value wd ) {
@@ -29,7 +28,7 @@ static value hxinotify_rm_watch( value fd, value wd ) {
 	val_check(wd,int);
 	int r;
 	r = inotify_rm_watch( val_int( fd ), val_int( wd ) );
-	return alloc_int( r );
+	return alloc_int( r < 0 ? -errno : 0 );
 }
 
 static value hxinotify_read( value fd, value buf, value size ) {
@@ -40,14 +39,14 @@ static value hxinotify_read( value fd, value buf, value size ) {
 	val_check(size,int);
 	ssize_t len;
 	len = read( val_int(fd), (char*)val_string(buf), val_int(size) );
-	return alloc_int( len );
+	return alloc_int( len < 0 ? -errno : len );
 }
 
 static value hxinotify_close( value fd ) {
 	val_check(fd,int);
 	int r;
 	r = close( val_int(fd) );
-	return alloc_int( r );
+	return alloc_int( r < 0 ? -errno : 0 );
 }
 
 DEFINE_PRIM( hxinotify_init, 1 );

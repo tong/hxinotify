@@ -176,10 +176,16 @@ typedef InotifyEvent = {
 @:require(sys)
 class Inotify {
 
+	/**
+		The inotify file descriptor, or `-errno` if initialization failed.
+	**/
 	public final fd : Int;
 
 	/**
 		Creates an inotify instance.
+
+		@param  nonBlock  `read` returns an empty array instead of blocking when no events are available
+		@param  closeOnExec  Close the file descriptor on `exec`
 	**/
 	public function new( nonBlock = false, closeOnExec = false ) {
 		fd = #if doc_gen 0 #else _init((nonBlock ? NONBLOCK:0) | (closeOnExec ? CLOEXEC:0))#end;
@@ -188,9 +194,9 @@ class Inotify {
 	/**
 		Adds a new watch, or modifies an existing watch.
 
-		@param  path  Path to file ot directory to watch
+		@param  path  Path to file or directory to watch
 		@param  mask  Set of events that the kernel should monitor
-		@returns  Created watch descriptior itdentifier
+		@returns  Watch descriptor, or `-errno` on failure
 	**/
 	public function addWatch( path : String, mask : InotifyMask ) : Int {
 		path = FileSystem.fullPath( path );
@@ -210,7 +216,7 @@ class Inotify {
 		Removes the watch associated with the watch descriptor `wd` from the inotify instance.
 
 		@param  wd  Watch descriptor identifier
-		@returns  Result status code
+		@returns  `0` on success, `-errno` on failure
 	**/
 	public function removeWatch( wd : Int ) : Int {
 		return #if doc_gen 0 #else _rm_watch( fd, wd ) #end;
@@ -256,6 +262,8 @@ class Inotify {
 
 	/**
 		Remove all watches and close the file descriptor.
+
+		@returns  `0` on success, `-errno` on failure
 	**/
 	public function close() : Int {
 		return #if doc_gen 0 #else _close( fd ) #end;
