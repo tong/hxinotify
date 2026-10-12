@@ -14,31 +14,35 @@ jobs:
       matrix:
         haxe:
         - latest
-        - 4.3.1
+        - 5.0.0-preview.1
+        - 4.3.7
+    env:
+      GH_TOKEN: ${{ github.token }}
     steps:
-      - uses: actions/checkout@v4
-      - name: Install haxe ${{ matrix.haxe }} 
-        uses: krdlab/setup-haxe@v1.5.1
+      - uses: actions/checkout@v7
+      - name: Install haxe ${{ matrix.haxe }}
+        uses: krdlab/setup-haxe@v2.1.1
         with:
           haxe-version: ${{ matrix.haxe }}
       - run: haxe --version
       - name: Setup haxelibs
         run: |
           haxelib dev inotify .
-          haxelib install hashlink
-          haxelib install hxcpp
+          gh release download --repo HaxeFoundation/hxcpp --pattern 'hxcpp-*.zip' --output hxcpp.zip
+          haxelib install hxcpp.zip --always
       - name: Build ndll
         run: haxelib run hxcpp build.xml ndll
-      - name: Build hdll
+      - name: Install hashlink
         run: |
-          sudo apt-get install libpng-dev libturbojpeg-dev libvorbis-dev libopenal-dev libsdl2-dev libmbedtls-dev libuv1-dev
-          git clone https://github.com/HaxeFoundation/hashlink.git
-          cd hashlink
-          make
-          sudo make install
+          sudo apt-get update
+          sudo apt-get install -y libpng-dev libturbojpeg-dev libvorbis-dev libopenal-dev libsdl2-dev libmbedtls-dev libuv1-dev libsqlite3-dev
+          tag=$(gh release view --repo HaxeFoundation/hashlink --json tagName --jq .tagName)
+          git clone --depth 1 --branch "$tag" https://github.com/HaxeFoundation/hashlink.git /tmp/hashlink
+          make -C /tmp/hashlink
+          sudo make -C /tmp/hashlink install
           sudo ldconfig
-          cd ..
-          cc -o inotify.hdll -shared -std=c11 -O3 -Wall -m64 -fPIC hlinotify.c -lhl
+      - name: Build hdll
+        run: cc -o inotify.hdll -shared -std=c11 -O3 -Wall -m64 -fPIC hlinotify.c -lhl
       - name: Test
         run: test/test.sh
       - name: Build haxedoc.xml
