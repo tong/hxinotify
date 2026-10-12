@@ -20,15 +20,21 @@ See: https://man7.org/linux/man-pages/man7/inotify.7.html
 
 ## Build
 
+The haxelib package includes prebuilt ndlls for `Linux64` (x86_64) and `RPi` (64-bit Raspberry Pi OS, aarch64).
+For other systems, build the native library from the sources shipped in the package (`cd $(haxelib libpath inotify)`).
+
 - Cpp/Neko (inotify.ndll)
 ```sh
 haxelib run hxcpp build.xml
 ```
+On a Raspberry Pi this writes `ndll/RPi/inotify.ndll`, which hxcpp loads on every Pi.
+Rebuild it on 32-bit Raspberry Pi OS (armv7l), since the prebuilt one is 64-bit.
 
 - Hashlink (inotify.hdll)
 ```sh
 cc -o inotify.hdll -shared -std=c11 -O3 -Wall -m64 -fPIC hlinotify.c -lhl
 ```
+Omit `-m64` on ARM.
 
 
 ## Test

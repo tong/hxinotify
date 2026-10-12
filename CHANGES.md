@@ -5,7 +5,9 @@
 - `addWatch` no longer resolves the path (fixes `DONT_FOLLOW`)
 - Native calls return `-errno` on failure
 - Blocking `read()` no longer stalls GC in other threads (hl, cpp)
-- Ship native sources for building the hdll
+- `fd` is public (read-only)
+- Ship native sources for building the ndll/hdll
+- RPi ndll is now 64-bit (aarch64); rebuild it on 32-bit Raspberry Pi OS
 
 ### 2.0.1
 - Fix neko/cpp file name length
