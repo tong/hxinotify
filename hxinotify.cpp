@@ -37,9 +37,14 @@ static value hxinotify_read( value fd, value buf, value size ) {
 	//val_check(buf,string); // error hxcpp
 	//val_check(buf,buffer); // error neko
 	val_check(size,int);
-	ssize_t len;
-	len = read( val_int(fd), (char*)val_string(buf), val_int(size) );
-	return alloc_int( len < 0 ? -errno : len );
+	int _fd = val_int(fd), _size = val_int(size);
+	char *data = (char*)val_string(buf);
+	// Allow GC in other threads while blocked (buf is rooted by the caller, GC does not move)
+	gc_enter_blocking();
+	ssize_t len = read( _fd, data, _size );
+	int err = errno;
+	gc_exit_blocking();
+	return alloc_int( len < 0 ? -err : len );
 }
 
 static value hxinotify_close( value fd ) {

@@ -24,8 +24,12 @@ HL_PRIM int HL_NAME(rm_watch)( int fd, int wd ) {
 
 HL_PRIM int HL_NAME(read)( int fd, vbyte *buf, int size ) {
 	ssize_t len;
+	// Allow GC in other threads while blocked (buf is rooted by the caller, HL GC does not move)
+	hl_blocking( true );
 	len = read( fd, (char*)buf, size );
-	return len < 0 ? -errno : (int)len;
+	int err = errno;
+	hl_blocking( false );
+	return len < 0 ? -err : (int)len;
 }
 
 HL_PRIM int HL_NAME(close)( int fd ) {
