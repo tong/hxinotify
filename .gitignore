@@ -13,3 +13,4 @@ test/*.n
 *.zip
 haxedoc.xml
 TODO*
+test/cpp/

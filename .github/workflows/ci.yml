@@ -16,7 +16,7 @@ jobs:
         - latest
         - 4.3.1
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Install haxe ${{ matrix.haxe }} 
         uses: krdlab/setup-haxe@v1.5.1
         with:
@@ -36,8 +36,11 @@ jobs:
           cd hashlink
           make
           sudo make install
+          sudo ldconfig
           cd ..
-          cc -o inotify.hdll -shared -std=c11 -O3 -Wall -m64 -fPIC -lhl hlinotify.c
+          cc -o inotify.hdll -shared -std=c11 -O3 -Wall -m64 -fPIC hlinotify.c -lhl
+      - name: Test
+        run: test/test.sh
       - name: Build haxedoc.xml
         run: haxe haxedoc.hxml
       - name: Build cpp example

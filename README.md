@@ -27,9 +27,15 @@ haxelib run hxcpp build.xml
 
 - Hashlink (inotify.hdll)
 ```sh
-cc -o inotify.hdll -shared -std=c11 -O3 -Wall -m64 -fPIC -lhl hlinotify.c
+cc -o inotify.hdll -shared -std=c11 -O3 -Wall -m64 -fPIC hlinotify.c -lhl
 ```
 
+
+## Test
+
+```sh
+test/test.sh
+```
 
 ## Usage
 
