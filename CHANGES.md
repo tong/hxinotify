@@ -1,3 +1,12 @@
+### 2.1.0
+- Fix `NONBLOCK` and `CLOEXEC` flag values (`new Inotify(true)` always failed)
+- Non-blocking `read()` returns an empty array when no events are available
+- Fix infinite loop parsing event names on cpp
+- `addWatch` no longer resolves the path (fixes `DONT_FOLLOW`)
+- Native calls return `-errno` on failure
+- Blocking `read()` no longer stalls GC in other threads (hl, cpp)
+- Ship native sources for building the hdll
+
 ### 2.0.1
 - Fix neko/cpp file name length
 
