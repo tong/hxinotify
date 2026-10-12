@@ -5,12 +5,14 @@ package sys.io;
 enum abstract InotifyMask(Int) from Int to Int {
 
 	/**
+		`inotify_init1` flag: set `O_NONBLOCK` on the file descriptor.
 	**/
-	var NONBLOCK = 0x04000;
+	var NONBLOCK = 0x800;
 
 	/**
+		`inotify_init1` flag: set `O_CLOEXEC` on the file descriptor.
 	**/
-	var CLOEXEC = 0x02000000;
+	var CLOEXEC = 0x80000;
 
 	/**
 		File was accessed  (e.g., `read`,`execve`)
