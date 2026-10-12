@@ -33,13 +33,15 @@ jobs:
       - name: Build ndll
         run: haxelib run hxcpp build.xml ndll
       - name: Install hashlink
+        # Build only hl and libhl, the bundled hdlls need extra deps (e.g. SDL3)
         run: |
-          sudo apt-get update
-          sudo apt-get install -y libpng-dev libturbojpeg-dev libvorbis-dev libopenal-dev libsdl2-dev libmbedtls-dev libuv1-dev libsqlite3-dev
           tag=$(gh release view --repo HaxeFoundation/hashlink --json tagName --jq .tagName)
           git clone --depth 1 --branch "$tag" https://github.com/HaxeFoundation/hashlink.git /tmp/hashlink
-          make -C /tmp/hashlink
-          sudo make -C /tmp/hashlink install
+          make -C /tmp/hashlink hl
+          cd /tmp/hashlink
+          sudo cp hl /usr/local/bin/
+          sudo cp libhl.so /usr/local/lib/
+          sudo cp src/hl.h src/hl_ffi.h src/hlc.h src/hlc_main.c /usr/local/include/
           sudo ldconfig
       - name: Build hdll
         run: cc -o inotify.hdll -shared -std=c11 -O3 -Wall -m64 -fPIC hlinotify.c -lhl
