@@ -239,26 +239,23 @@ class Inotify {
 			if( length == -E_AGAIN ) return [];
 			throw 'inotify read failed (errno ${-length})';
 		}
-		buf = buf.sub( 0, length );
 		var events = new Array<InotifyEvent>();
 		var i = 0;
 		while( i < length ) {
-			var wd : Int = buf.getInt32( i );
-			var mask : Int = buf.getInt32( i + 4 );
-			var cookie : Int = buf.getInt32( i + 8 );
-			var len = buf.getUInt16( i + 12 );
+			var len = buf.getInt32( i + 12 );
 			var name : String = null;
 			if( len > 0 ) {
-				name = buf.getString( i+16 , len );
-				//TODO wtf, dirty fuck
-				#if (cpp||neko)
-				var s = new StringBuf();
-				var j = 0;
-				while( name.charCodeAt(j) != 0 ) s.add( name.charAt(j++) );
-				name = s.toString();
-				#end
+				// Name is NUL-terminated and padded with further NULs
+				var end = i + 16, max = end + len;
+				while( end < max && buf.get( end ) != 0 ) end++;
+				name = buf.getString( i + 16, end - (i + 16) );
 			}
-			events.push( { wd: wd, mask: mask, cookie: cookie, name: name } );
+			events.push( {
+				wd: buf.getInt32( i ),
+				mask: buf.getInt32( i + 4 ),
+				cookie: buf.getInt32( i + 8 ),
+				name: name
+			} );
 			i += 16 + len;
 		}
 		return events;
